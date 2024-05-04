@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: RegisterPage(),
       routes: {
-        '/login_page': (context) => LoginPage(),
+        '/login_page': (context) =>  LoginPage(),
         '/register_page': (context) => RegisterPage(),
         '/home_page': (context) => HomePage(),
       },
