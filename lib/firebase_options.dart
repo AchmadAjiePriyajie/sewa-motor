@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAQMUACrVn3fXSlZKW5kBOvLvVKcus6Ssc',
-    appId: '1:507320316228:android:08b7d00f2c5575b6b06711',
-    messagingSenderId: '507320316228',
-    projectId: 'sewa-motor-10a7b',
-    storageBucket: 'sewa-motor-10a7b.appspot.com',
+    apiKey: 'AIzaSyDUKVvFG_CNeJsDqT3tBnOgAUg48T-c2qg',
+    appId: '1:593893712227:android:fadee0127f0ca419fcb356',
+    messagingSenderId: '593893712227',
+    projectId: 'sewa-motor-e706c',
+    storageBucket: 'sewa-motor-e706c.appspot.com',
   );
+
 }

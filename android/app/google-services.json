@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "507320316228",
-    "project_id": "sewa-motor-10a7b",
-    "storage_bucket": "sewa-motor-10a7b.appspot.com"
+    "project_number": "593893712227",
+    "project_id": "sewa-motor-e706c",
+    "storage_bucket": "sewa-motor-e706c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:507320316228:android:08b7d00f2c5575b6b06711",
+        "mobilesdk_app_id": "1:593893712227:android:fadee0127f0ca419fcb356",
         "android_client_info": {
           "package_name": "com.example.sewa_motor"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAQMUACrVn3fXSlZKW5kBOvLvVKcus6Ssc"
+          "current_key": "AIzaSyDUKVvFG_CNeJsDqT3tBnOgAUg48T-c2qg"
         }
       ],
       "services": {
