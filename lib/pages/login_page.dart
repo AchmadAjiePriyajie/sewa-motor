@@ -1,17 +1,45 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/components/my_textfield.dart';
+import 'package:sewa_motor/components/popup_message.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({
     super.key,
   });
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool passwordVisible = true;
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
 
-  void login() {}
+  void login() async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      Navigator.popAndPushNamed(context, '/home_page');
+    } on FirebaseAuthException catch (e) {
+      // Stop Loading
+      Navigator.pop(context);
+      // Display error
+      displayMessageToUser(e.code, context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +85,13 @@ class LoginPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Login to your account',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  Center(
+                    child: Text(
+                      'Login',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -86,7 +116,7 @@ class LoginPage extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    'Password',
+                    'Kata Sandi',
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -95,10 +125,29 @@ class LoginPage extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  MyTextField(
-                    obscureText: true,
-                    hintText: 'Password',
+                  TextField(
                     controller: passwordController,
+                    obscureText: passwordVisible,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                        ),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(passwordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility),
+                        onPressed: () {
+                          setState(
+                            () {
+                              passwordVisible = !passwordVisible;
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
@@ -107,7 +156,7 @@ class LoginPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'Forgot your password?',
+                        'Lupa kata sandi?',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -121,9 +170,7 @@ class LoginPage extends StatelessWidget {
                   MyButton(
                     text: 'Login',
                     fontSize: 20,
-                    onTap: () {
-                      Navigator.pushNamed(context, '/home_page');
-                    },
+                    onTap: login,
                   ),
                   SizedBox(
                     height: 10,
@@ -131,14 +178,16 @@ class LoginPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Don\'t have an account?'),
+                      const Text('Belum punya akun?'),
                       const SizedBox(
                         width: 10,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, '/register_page');
+                        },
                         child: const Text(
-                          'Register Now',
+                          'Daftar disini',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
