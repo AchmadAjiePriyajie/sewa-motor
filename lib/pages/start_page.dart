@@ -39,7 +39,7 @@ class StartPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 150,
           ),
           Center(
@@ -48,7 +48,7 @@ class StartPage extends StatelessWidget {
               width: 420,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 60,
           ),
           Text(
@@ -58,7 +58,7 @@ class StartPage extends StatelessWidget {
               fontSize: 20,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Padding(
@@ -73,7 +73,7 @@ class StartPage extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           MyButton(
