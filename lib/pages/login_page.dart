@@ -32,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      Navigator.popAndPushNamed(context, '/home_page');
     } on FirebaseAuthException catch (e) {
       // Stop Loading
       Navigator.pop(context);

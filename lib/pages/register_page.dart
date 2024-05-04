@@ -269,7 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/register_page');
+                            Navigator.pushNamed(context, '/login_page');
                           },
                           child: const Text(
                             'Login disini',
