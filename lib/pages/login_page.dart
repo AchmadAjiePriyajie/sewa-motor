@@ -32,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       // Stop Loading
       Navigator.pop(context);
@@ -99,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   Text(
                     'Email',
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -117,34 +118,37 @@ class _LoginPageState extends State<LoginPage> {
                   Text(
                     'Kata Sandi',
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: passwordVisible,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: Colors.black,
+                  SizedBox(
+                    height: 50,
+                    child: TextField(
+                      controller: passwordController,
+                      obscureText: passwordVisible,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(passwordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () {
-                          setState(
-                            () {
-                              passwordVisible = !passwordVisible;
-                            },
-                          );
-                        },
+                        suffixIcon: IconButton(
+                          icon: Icon(passwordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () {
+                            setState(
+                              () {
+                                passwordVisible = !passwordVisible;
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -157,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text(
                         'Lupa kata sandi?',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -177,7 +181,12 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Belum punya akun?'),
+                      Text(
+                        'Belum punya akun?',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                        ),
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
