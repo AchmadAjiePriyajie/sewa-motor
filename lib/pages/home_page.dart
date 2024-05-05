@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sewa_motor/components/my_textfield.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -21,8 +19,11 @@ class HomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(
-                  Icons.person,
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/profile_page'),
+                  child: Icon(
+                    Icons.person,
+                  ),
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -100,9 +101,7 @@ class HomePage extends StatelessWidget {
           label: 'Receipt',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.notifications), 
-          label: 'Notification'
-        ),
+            icon: Icon(Icons.notifications), label: 'Notification'),
       ]),
     );
   }

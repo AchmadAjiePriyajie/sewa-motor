@@ -126,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Text(
                       'Email',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -144,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Text(
                       'Nama Lengkap',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -162,7 +162,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Text(
                       'Nomor WA',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -180,34 +180,37 @@ class _RegisterPageState extends State<RegisterPage> {
                     Text(
                       'Kata Sandi',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    TextField(
-                      controller: passwordController,
-                      obscureText: passwordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: Colors.black,
+                    SizedBox(
+                      height: 50,
+                      child: TextField(
+                        controller: passwordController,
+                        obscureText: passwordVisible,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(passwordVisible
-                              ? Icons.visibility_off
-                              : Icons.visibility),
-                          onPressed: () {
-                            setState(
-                              () {
-                                passwordVisible = !passwordVisible;
-                              },
-                            );
-                          },
+                          suffixIcon: IconButton(
+                            icon: Icon(passwordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
+                              setState(
+                                () {
+                                  passwordVisible = !passwordVisible;
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -217,35 +220,38 @@ class _RegisterPageState extends State<RegisterPage> {
                     Text(
                       'Konfirmasi Kata Sandi',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    TextField(
-                      controller: confirmPasswordController,
-                      obscureText: confirmPasswordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: Colors.black,
+                    SizedBox(
+                      height: 50,
+                      child: TextField(
+                        controller: confirmPasswordController,
+                        obscureText: confirmPasswordVisible,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(confirmPasswordVisible
-                              ? Icons.visibility_off
-                              : Icons.visibility),
-                          onPressed: () {
-                            setState(
-                              () {
-                                confirmPasswordVisible =
-                                    !confirmPasswordVisible;
-                              },
-                            );
-                          },
+                          suffixIcon: IconButton(
+                            icon: Icon(confirmPasswordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
+                              setState(
+                                () {
+                                  confirmPasswordVisible =
+                                      !confirmPasswordVisible;
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -263,17 +269,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Sudah punya akun?'),
+                        Text(
+                          'Sudah punya akun?',
+                          style: GoogleFonts.poppins(),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/register_page');
+                            Navigator.pushNamed(context, '/login_page');
                           },
-                          child: const Text(
+                          child: Text(
                             'Login disini',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
