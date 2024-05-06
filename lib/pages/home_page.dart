@@ -1,10 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/components/my_product.dart';
-import 'package:sewa_motor/components/my_textfield.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -22,8 +18,9 @@ class HomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(
-                  Icons.person,
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/profile_page'),
+                  child: Icon(Icons.person),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -119,19 +116,21 @@ class HomePage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: Column(children: [
-                          Image.asset(
-                            'images/yamaha.png',
-                            width: 39,
-                          ),
-                          Text(
-                            'Yamaha',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              'images/yamaha.png',
+                              width: 39,
                             ),
-                          )
-                        ]),
+                            Text(
+                              'Yamaha',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       SizedBox(
                         width: 20,
@@ -162,7 +161,7 @@ class HomePage extends StatelessWidget {
                           Text(
                             'Honda',
                             style: GoogleFonts.poppins(
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                           )
@@ -197,7 +196,7 @@ class HomePage extends StatelessWidget {
                             Text(
                               'Vespa',
                               style: GoogleFonts.poppins(
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
                             )
