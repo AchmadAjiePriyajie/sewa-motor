@@ -58,7 +58,6 @@ class _RegisterPageState extends State<RegisterPage> {
         'email': userCredential.user!.email,
         'username': nameController.text,
         'nomor_wa': phoneNumberController.text,
-        'password': passwordController.text,
       });
     }
   }
