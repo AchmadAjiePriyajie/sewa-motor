@@ -4,7 +4,6 @@ import 'package:sewa_motor/auth/auth.dart';
 import 'package:sewa_motor/firebase_options.dart';
 import 'package:sewa_motor/pages/home_page.dart';
 import 'package:sewa_motor/pages/login_page.dart';
-import 'package:sewa_motor/pages/product_page.dart';
 import 'package:sewa_motor/pages/profile_page.dart';
 import 'package:sewa_motor/pages/register_page.dart';
 import 'package:sewa_motor/pages/merk_page.dart';
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
         '/profile_page': (context) => ProfilePage(),
         '/auth_page': (context) => AuthPage(),
         '/merk_page': (context) => MerkPage(),
-        '/product_page' : (context) => ProductPage(),
       },
     );
   }

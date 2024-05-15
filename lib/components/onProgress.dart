@@ -21,9 +21,12 @@ class FirestoreServices {
       'Harga': harga,
     });
   }
+
+  static getMotor() {}
+
+  static getMotorStream() {}
 }
 
-void addProduct() async {}
 
 class _OnProgressState extends State<OnProgress> {
   final FirestoreServices firestoreServices = FirestoreServices();
@@ -32,15 +35,19 @@ class _OnProgressState extends State<OnProgress> {
   final TextEditingController harga = TextEditingController();
 
   void addProduct() async {
-    firestoreServices.addMotor(
-      namamotor.text,
-      warna.text,
-      harga.text,
-    );
-    namamotor.clear();
-    warna.clear();
-    harga.clear();
-    Navigator.pop(context);
+    if (namamotor != "" && warna != "" && harga != "") {
+      firestoreServices.addMotor(
+        namamotor.text,
+        warna.text,
+        harga.text,
+      );
+      namamotor.clear();
+      warna.clear();
+      harga.clear();
+      Navigator.pop(context);
+    }else{
+      
+    }
   }
 
   @override
@@ -129,9 +136,13 @@ class _OnProgressState extends State<OnProgress> {
                   ),
                 ],
               ),
-              actions: [ElevatedButton(onPressed: () {
-                addProduct();
-              }, child: Text('Add'))],
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      addProduct();
+                    },
+                    child: Text('Add'))
+              ],
             ),
           );
         },
