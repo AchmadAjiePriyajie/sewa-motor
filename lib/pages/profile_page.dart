@@ -51,60 +51,45 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Center(
-              child: Container(
-                width: 280,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 3,
-                      offset: Offset(0.5, 1),
-                    )
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: () {
-                        
-                      },
+
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.grey,
+              ),
+            ),
+            child: Column(
+              children: [
+                ListTile(
+                      onTap: () {},
                       leading: Icon(Icons.person),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Profile Settings',
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              
-                            )
-                          ),
+                          Text('Profile Settings',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                              )),
                           Icon(Icons.navigate_next)
                         ],
                       ),
                     ),
-                    Divider(),
-                    ListTile(
-                      onTap: logout,
-                      leading: Icon(Icons.logout),
-                      title: Text(
-                        'Logout',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          
-                        ),
-                      ),
+                Divider(),
+                ListTile(
+                  onTap: logout,
+                  leading: Icon(Icons.logout),
+                  title: Text(
+                    'Logout',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          )
+          ),
         ],
       ),
     );

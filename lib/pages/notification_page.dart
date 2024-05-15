@@ -10,19 +10,50 @@ class NotifPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlue[800],
+        toolbarHeight: 70,
+        title: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 10,),
+                    Text(
+                      'Notification',
+                      style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/profile_page');
+                  },
+                  child: Image.asset(
+                    'images/profile.png',
+                    width: 40,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
       body: Container(
         margin: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                blurRadius: 3,
-                spreadRadius: 3,
-                offset: Offset(0, 3))
-          ],
-        ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.withOpacity(0.5))),
         child: Column(
           children: [
             SizedBox(
@@ -33,12 +64,12 @@ class NotifPage extends StatelessWidget {
                 SizedBox(
                   width: 20,
                 ),
-                Icon(Icons.notifications),
+                Icon(Icons.watch_later_outlined),
                 SizedBox(
                   width: 10,
                 ),
                 Text(
-                  'Notification',
+                  'Terkini',
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,

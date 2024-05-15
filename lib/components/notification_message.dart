@@ -19,13 +19,7 @@ class NotifMessage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 3,
-              spreadRadius: 3,
-              offset: Offset(0, 3))
-        ],
+        border: Border.all(color: Colors.grey.withOpacity(0.6))
       ),
       child: Column(
         children: [
