@@ -5,7 +5,7 @@ import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/components/my_text.dart';
 
 class ReceiptPage extends StatefulWidget {
-  const ReceiptPage({super.key});
+  ReceiptPage({super.key});
 
   @override
   State<ReceiptPage> createState() => _ReceiptPageState();
@@ -18,7 +18,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue[800],
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.lightBlue[600],
         toolbarHeight: 70,
         title: Column(
           children: [
@@ -38,7 +39,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                   },
                   child: Image.asset(
                     'images/profile.png',
-                    width: 30,
+                    width: 40,
                   ),
                 ),
               ],

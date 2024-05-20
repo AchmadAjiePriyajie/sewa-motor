@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sewa_motor/pages/home_page.dart';
@@ -24,27 +24,28 @@ class _HomePageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: tabs[myIndex],
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: myIndex,
+      bottomNavigationBar: CurvedNavigationBar(
+          backgroundColor: Colors.white,
+          color: Colors.lightBlue[600]!,
+          animationDuration: Duration(milliseconds: 300),
           onTap: (index) {
             setState(() {
               myIndex = index;
             });
           },
           items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+            Icon(
+              Icons.home,
+              color: Colors.white,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.receipt),
-              label: 'Receipt',
+            Icon(
+              Icons.receipt,
+              color: Colors.white,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications),
-              label: 'Notification',
+            Icon(
+              Icons.notifications,
+              color: Colors.white,
             ),
           ]),
     );
