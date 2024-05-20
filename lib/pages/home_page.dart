@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 130,
         backgroundColor: Colors.lightBlue[800],
         title: Column(
@@ -265,7 +266,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.hasData) {
                       List<DocumentSnapshot> motorList = snapshot.data!.docs;
                       return ListView.builder(
-                        itemCount: motorList.length,
+                        itemCount: 4,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           DocumentSnapshot document = motorList[index];
