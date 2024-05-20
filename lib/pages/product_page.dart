@@ -119,7 +119,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 15,
                       ),
                       Text(
-                        'Rp.'+ harga.toString() +' / Jam',
+                        'Rp.' + harga.toString() + ' / Jam',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -157,13 +157,18 @@ class _ProductPageState extends State<ProductPage> {
                       ),
                       addText('Merek        : ' + merk),
                       addText('Seri            : ' + namaMotor),
-                      addText('Kapasitas : ' + kapasitasMesin.toString() + ' cc'),
+                      addText(
+                          'Kapasitas : ' + kapasitasMesin.toString() + ' cc'),
                       Divider(),
                       SizedBox(
                         height: 150,
                       ),
                       MyButton(
-                          text: "Pesan Sekarang", fontSize: 13, onTap: () {}),
+                        text: "Pesan Sekarang",
+                        fontSize: 13,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/transaction_page'),
+                      ),
                     ],
                   ),
                 ),
