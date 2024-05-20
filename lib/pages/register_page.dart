@@ -133,6 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 10,
                     ),
                     MyTextField(
+                      keyboardType: TextInputType.emailAddress,
                       obscureText: false,
                       hintText: 'Email',
                       controller: emailController,
