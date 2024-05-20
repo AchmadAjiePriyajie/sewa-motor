@@ -185,7 +185,9 @@ class _TransactionPageState extends State<TransactionPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return ReceiptPage();
+                                  return MainPage(
+                                    bottomNavIdx: 1,
+                                  );
                                 },
                               ),
                             );

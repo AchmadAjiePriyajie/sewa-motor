@@ -6,7 +6,8 @@ import 'package:sewa_motor/pages/notification_page.dart';
 import 'package:sewa_motor/pages/receipt_page.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({super.key});
+  final int? bottomNavIdx;
+  MainPage({super.key, this.bottomNavIdx});
 
   @override
   State<MainPage> createState() => _HomePageState();
@@ -15,6 +16,14 @@ class MainPage extends StatefulWidget {
 class _HomePageState extends State<MainPage> {
   final TextEditingController searchController = TextEditingController();
   int myIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.bottomNavIdx != null) {
+      myIndex = widget.bottomNavIdx!;
+    }
+  }
+
   final tabs = [
     Center(child: HomePage()),
     Center(child: ReceiptPage()),
@@ -29,6 +38,7 @@ class _HomePageState extends State<MainPage> {
           backgroundColor: Colors.white,
           color: Colors.lightBlue[600]!,
           animationDuration: Duration(milliseconds: 300),
+          index: myIndex,
           onTap: (index) {
             setState(() {
               myIndex = index;
