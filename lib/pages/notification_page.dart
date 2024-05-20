@@ -11,6 +11,7 @@ class NotifPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.lightBlue[800],
         toolbarHeight: 70,
         title: Column(
@@ -24,7 +25,9 @@ class NotifPage extends StatelessWidget {
                       Icons.notifications,
                       color: Colors.white,
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Text(
                       'Notification',
                       style: GoogleFonts.poppins(

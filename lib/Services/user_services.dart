@@ -14,4 +14,10 @@ class UserService {
       print('Ann error occured $err');
     }
   }
+
+  Future<DocumentSnapshot> getUserById(String docID) async {
+    DocumentReference docRef = user.doc(docID);
+    DocumentSnapshot docSnapshot = await docRef.get();
+    return docSnapshot;
+  }
 }

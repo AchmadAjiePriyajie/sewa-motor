@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sewa_motor/Services/user_services.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,10 +13,18 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final user = FirebaseAuth.instance.currentUser!;
+  UserService userService = UserService();
+  Future<DocumentSnapshot?>? userData;
 
   Future<void> logout() async {
     FirebaseAuth.instance.signOut();
     Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userData = userService.getUserById(user.email!);
   }
 
   @override
@@ -38,22 +48,49 @@ class _ProfilePageState extends State<ProfilePage> {
                       'images/profile.png',
                       width: 100,
                     ),
-                    Text(
-                      user.email!,
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                    FutureBuilder<DocumentSnapshot?>(
+                      future: userData,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                              'Error: ${snapshot.error}'); // Handle errors
+                        }
+
+                        if (!snapshot.hasData) {
+                          return const CircularProgressIndicator(); // Show loading indicator
+                        }
+
+                        DocumentSnapshot userDoc = snapshot.data!;
+                        if (!userDoc.exists) {
+                          Text(
+                            user.email!,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          );
+                        }
+
+                        // Extract motor data
+                        String username = userDoc['username'];
+                        return Text(
+                          username,
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 )),
               ),
             ],
           ),
-
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
@@ -63,19 +100,19 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               children: [
                 ListTile(
-                      onTap: () {},
-                      leading: Icon(Icons.person),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Profile Settings',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                              )),
-                          Icon(Icons.navigate_next)
-                        ],
-                      ),
-                    ),
+                  onTap: () {},
+                  leading: Icon(Icons.person),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Profile Settings',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                          )),
+                      Icon(Icons.navigate_next)
+                    ],
+                  ),
+                ),
                 Divider(),
                 ListTile(
                   onTap: logout,

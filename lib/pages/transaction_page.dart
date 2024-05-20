@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/components/my_textfield.dart';
-import 'package:sewa_motor/pages/confirm_payment_page.dart';
+import 'package:sewa_motor/pages/main_page.dart';
+import 'package:sewa_motor/pages/receipt_page.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -174,20 +175,23 @@ class _TransactionPageState extends State<TransactionPage> {
                         height: 20,
                       ),
                       MyButton(
-                          text: 'Lanjutkan',
-                          fontSize: 20,
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return ConfirmPayment();
-                                  },
-                                ),
-                              );
-                            }
-                          }),
+                        text: 'Lanjutkan',
+                        fontSize: 20,
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            namaLengkap.clear();
+                            durasi.clear();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return ReceiptPage();
+                                },
+                              ),
+                            );
+                          }
+                        },
+                      ),
                       SizedBox(
                         height: 10,
                       ),

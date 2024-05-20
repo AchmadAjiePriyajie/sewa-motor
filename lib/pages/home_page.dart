@@ -266,7 +266,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.hasData) {
                       List<DocumentSnapshot> motorList = snapshot.data!.docs;
                       return ListView.builder(
-                        itemCount: motorList.length,
+                        itemCount: 4,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           DocumentSnapshot document = motorList[index];
