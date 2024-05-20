@@ -16,6 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   MotorService motorService = MotorService();
   final TextEditingController searchController = TextEditingController();
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                     // Bar Yamaha
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/merk_page');
+                        Navigator.pushNamed(context,'/merk_page');
                       },
                       child: Container(
                         padding: EdgeInsets.only(

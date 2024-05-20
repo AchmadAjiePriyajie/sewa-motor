@@ -23,6 +23,11 @@ class MotorService {
     return motorStream;
   }
 
+  Stream<QuerySnapshot> getMerkStream(){
+    final motorStream = motor.where('merk' , isEqualTo: 'Yamaha').orderBy('merk', descending: true).snapshots();
+    return motorStream;
+  }
+
   Future<DocumentSnapshot> getMotorById(String docID) async {
     DocumentReference docRef = motor.doc(docID);
     DocumentSnapshot docSnapshot = await docRef.get();
