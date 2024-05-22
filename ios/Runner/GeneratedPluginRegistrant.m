@@ -30,6 +30,12 @@
 @import firebase_storage;
 #endif
 
+#if __has_include(<midtrans_sdk/MidtransSdkPlugin.h>)
+#import <midtrans_sdk/MidtransSdkPlugin.h>
+#else
+@import midtrans_sdk;
+#endif
+
 #if __has_include(<path_provider_foundation/PathProviderPlugin.h>)
 #import <path_provider_foundation/PathProviderPlugin.h>
 #else
@@ -43,6 +49,7 @@
   [FLTFirebaseAuthPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseAuthPlugin"]];
   [FLTFirebaseCorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
   [FLTFirebaseStoragePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseStoragePlugin"]];
+  [MidtransSdkPlugin registerWithRegistrar:[registry registrarForPlugin:@"MidtransSdkPlugin"]];
   [PathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"PathProviderPlugin"]];
 }
 

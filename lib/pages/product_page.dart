@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/components/my_button.dart';
+import 'package:sewa_motor/pages/transaction_page.dart';
 
 class ProductPage extends StatefulWidget {
   final String docID;
@@ -166,8 +167,13 @@ class _ProductPageState extends State<ProductPage> {
                       MyButton(
                         text: "Pesan Sekarang",
                         fontSize: 13,
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/transaction_page'),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TransactionPage(motorId: widget.docID),
+                          ),
+                        ),
                       ),
                     ],
                   ),

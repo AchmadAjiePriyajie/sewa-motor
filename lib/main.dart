@@ -7,13 +7,13 @@ import 'package:sewa_motor/pages/login_page.dart';
 import 'package:sewa_motor/pages/map_page.dart';
 import 'package:sewa_motor/pages/profile_page.dart';
 import 'package:sewa_motor/pages/register_page.dart';
-import 'package:sewa_motor/pages/transaction_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
         '/home_page': (context) => HomePage(),
         '/profile_page': (context) => ProfilePage(),
         '/auth_page': (context) => AuthPage(),
-        '/transaction_page': (context) => TransactionPage(),
         '/map_page': (context) => MapPage(),
       },
     );

@@ -7,7 +7,7 @@ class MyTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
 
-  MyTextField({
+  const MyTextField({
     super.key,
     required this.obscureText,
     required this.hintText,
@@ -28,7 +28,7 @@ class MyTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Colors.black,
             ),
           ),
@@ -38,7 +38,7 @@ class MyTextField extends StatelessWidget {
           focusColor: Colors.black,
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Colors.red,
             ),
           ),
