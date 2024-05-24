@@ -1,6 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sewa_motor/pages/home_page.dart';
 import 'package:sewa_motor/pages/notification_page.dart';
 import 'package:sewa_motor/pages/receipt_page.dart';
@@ -25,7 +24,7 @@ class _HomePageState extends State<MainPage> {
   }
 
   final tabs = [
-    Center(child: HomePage()),
+    const Center(child: HomePage()),
     Center(child: ReceiptPage()),
     Center(child: NotifPage()),
   ];
@@ -37,7 +36,7 @@ class _HomePageState extends State<MainPage> {
       bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.white,
           color: Colors.lightBlue[600]!,
-          animationDuration: Duration(milliseconds: 300),
+          animationDuration: const Duration(milliseconds: 300),
           index: myIndex,
           onTap: (index) {
             setState(() {
@@ -45,15 +44,15 @@ class _HomePageState extends State<MainPage> {
             });
           },
           items: [
-            Icon(
+            const Icon(
               Icons.home,
               color: Colors.white,
             ),
-            Icon(
+            const Icon(
               Icons.receipt,
               color: Colors.white,
             ),
-            Icon(
+            const Icon(
               Icons.notifications,
               color: Colors.white,
             ),

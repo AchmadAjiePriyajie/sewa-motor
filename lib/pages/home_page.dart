@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       //Vespa
@@ -334,6 +334,7 @@ class _HomePageState extends State<HomePage> {
                         },
                       );
                     } else if (snapshot.hasError) {
+                      print(snapshot.error);
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else {
                       return Center(child: CircularProgressIndicator());

@@ -20,4 +20,11 @@ class UserService {
     DocumentSnapshot docSnapshot = await docRef.get();
     return docSnapshot;
   }
+
+  Future<void> updateUserTransctionId(
+      String docID, String transactionId) async {
+    await user.doc(docID).update({
+      'transactionId': transactionId,
+    });
+  }
 }

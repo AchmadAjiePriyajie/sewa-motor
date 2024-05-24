@@ -22,14 +22,17 @@ class MotorService {
   }
 
   Stream<QuerySnapshot> getMotorStream() {
-    final motorStream =
-        motor.orderBy('timestamp', descending: true).snapshots();
+    final motorStream = motor
+        .where('isOrdered', isEqualTo: false)
+        .orderBy('timestamp', descending: true)
+        .snapshots();
     return motorStream;
   }
 
   Stream<QuerySnapshot> getMotorStreamByMerk(String merk) {
     final motorStream = motor
         .where("merk", isEqualTo: merk)
+        .where('isOrdered', isEqualTo: false)
         .orderBy('timestamp', descending: true)
         .snapshots();
     return motorStream;
@@ -73,5 +76,15 @@ class MotorService {
         .toList();
 
     return motorList;
+  }
+
+  Future<void> updateMotorStatus(String docID, bool status) async {
+    DocumentReference docRef = motor.doc(docID);
+
+    await docRef.update(
+      {
+        'isOrdered': status,
+      },
+    );
   }
 }

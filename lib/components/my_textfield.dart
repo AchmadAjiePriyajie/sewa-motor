@@ -6,21 +6,26 @@ class MyTextField extends StatelessWidget {
   final String hintText;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
+  final int? maxLine;
+  final double? height;
 
-  MyTextField({
+  const MyTextField({
     super.key,
     required this.obscureText,
     required this.hintText,
     required this.controller,
     this.keyboardType,
     this.validator,
+    this.maxLine,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 50,
+      height: height,
       child: TextFormField(
+        maxLines: maxLine,
         validator: validator,
         keyboardType: keyboardType,
         obscureText: obscureText,
@@ -28,7 +33,7 @@ class MyTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Colors.black,
             ),
           ),
@@ -38,7 +43,7 @@ class MyTextField extends StatelessWidget {
           focusColor: Colors.black,
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Colors.red,
             ),
           ),

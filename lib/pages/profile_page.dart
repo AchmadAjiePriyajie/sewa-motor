@@ -18,7 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> logout() async {
     FirebaseAuth.instance.signOut();
-    Navigator.pop(context);
+    Navigator.popAndPushNamed(context, '/auth_page');
   }
 
   @override

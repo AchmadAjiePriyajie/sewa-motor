@@ -1,27 +1,93 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sewa_motor/Services/midtrans_services.dart';
+import 'package:sewa_motor/Services/motor_services.dart';
+import 'package:sewa_motor/Services/transaction_service.dart';
+import 'package:sewa_motor/Services/user_services.dart';
 import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/components/my_textfield.dart';
 import 'package:sewa_motor/pages/main_page.dart';
-import 'package:sewa_motor/pages/receipt_page.dart';
 
 class TransactionPage extends StatefulWidget {
-  const TransactionPage({super.key});
+  final String motorId;
+  TransactionPage({
+    super.key,
+    required this.motorId,
+  });
 
   @override
   State<TransactionPage> createState() => _TransactionPageState();
 }
 
-TextEditingController namaLengkap = TextEditingController();
+List<String> metodePembayaran = ['Transfer', 'Cash'];
 
-TextEditingController durasi = TextEditingController();
-
-List<String> metodePembayaran = ['Mandiri', 'Cash', 'Dana'];
-String selectedMethod = metodePembayaran.first;
-
-final _formKey = GlobalKey<FormState>();
+List<String> metodePengambilan = ['di ambil', 'di antar'];
 
 class _TransactionPageState extends State<TransactionPage> {
+  TextEditingController durasiController = TextEditingController();
+
+  TextEditingController addressController = TextEditingController();
+
+  TransactionService transactionService = TransactionService();
+
+  String selectedMethod = metodePembayaran.first;
+
+  String selectedPengambilan = metodePengambilan.first;
+
+  MotorService motorService = MotorService();
+
+  Future<DocumentSnapshot?>? _motorData;
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+  UserService userService = UserService();
+
+  @override
+  void initState() {
+    super.initState();
+    _motorData = motorService.getMotorById(widget.motorId);
+  }
+
+  void createTransaction() async {
+    DocumentSnapshot? mData = await _motorData;
+    String address = addressController.text;
+    int duration = int.parse(durasiController.text);
+    int harga = mData?['harga'];
+    double totalPrice = harga * duration.toDouble();
+
+    String transactionID = await transactionService.createTransaction(
+      user.email!,
+      widget.motorId,
+      duration,
+      selectedMethod,
+      totalPrice,
+      address,
+    );
+    userService.updateUserTransctionId(user.email!, transactionID);
+    if (selectedMethod == 'Transfer') {
+      String snapToken = await MidtransService.createTransaction({
+        'transaction_details': {
+          'order_id': transactionID,
+          'gross_amount': totalPrice
+        }
+      });
+
+      motorService.updateMotorStatus(widget.motorId, true);
+      transactionService.updateSnapById(transactionID, snapToken);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(
+            bottomNavIdx: 1,
+          ),
+        ),
+      );
+    }
+  }
+
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +95,7 @@ class _TransactionPageState extends State<TransactionPage> {
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[600],
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
@@ -62,13 +128,13 @@ class _TransactionPageState extends State<TransactionPage> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Center(
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                padding: EdgeInsets.all(15),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -88,32 +154,80 @@ class _TransactionPageState extends State<TransactionPage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(
-                        'Nama Lengkap',
+                        'Metode Pengambilan',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      MyTextField(
-                        obscureText: false,
-                        hintText: 'Nama Lengkap',
-                        controller: namaLengkap,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Nama Lengkap Kosong';
-                          } else {
-                            return null;
-                          }
+                      DropdownButtonFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        items: metodePengambilan
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              ),
+                            )
+                            .toList(),
+                        value: selectedPengambilan,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedPengambilan = newValue!;
+                          });
                         },
                       ),
-                      SizedBox(
+                      selectedPengambilan == 'di antar'
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  'Alamat Lengkap',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                MyTextField(
+                                  maxLine: 3,
+                                  obscureText: false,
+                                  keyboardType: TextInputType.multiline,
+                                  hintText: 'Alamat Lengkap',
+                                  controller: addressController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Alamat Kosong';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ],
+                            )
+                          : SizedBox(),
+                      const SizedBox(
                         height: 15,
                       ),
                       Text(
@@ -123,16 +237,16 @@ class _TransactionPageState extends State<TransactionPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       MyTextField(
                         keyboardType: TextInputType.number,
                         obscureText: false,
                         hintText: 'Durasi(Jam)',
-                        controller: durasi,
+                        controller: durasiController,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       Text(
@@ -142,18 +256,18 @@ class _TransactionPageState extends State<TransactionPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       DropdownButtonFormField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: const BorderSide(color: Colors.black),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: const BorderSide(color: Colors.black),
                           ),
                         ),
                         value: selectedMethod,
@@ -171,7 +285,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           });
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       MyButton(
@@ -179,22 +293,13 @@ class _TransactionPageState extends State<TransactionPage> {
                         fontSize: 20,
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
-                            namaLengkap.clear();
-                            durasi.clear();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return MainPage(
-                                    bottomNavIdx: 1,
-                                  );
-                                },
-                              ),
-                            );
+                            createTransaction();
+                            // namaLengkapController.clear();
+                            // durasiController.clear();
                           }
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                     ],
