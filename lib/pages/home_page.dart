@@ -334,6 +334,7 @@ class _HomePageState extends State<HomePage> {
                         },
                       );
                     } else if (snapshot.hasError) {
+                      print(snapshot.error);
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else {
                       return Center(child: CircularProgressIndicator());

@@ -41,9 +41,11 @@ dependencies:
   google_fonts: ^6.2.1
   firebase_storage: ^11.7.5
   curved_navigation_bar: ^1.0.3 
-  midtrans_sdk: ^0.4.0
+  # midtrans_sdk: ^0.4.0
   flutter_dotenv: ^5.1.0
   http: ^1.2.1
+  midtrans_snap: ^1.0.1
+  webview_flutter: ^4.7.0
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

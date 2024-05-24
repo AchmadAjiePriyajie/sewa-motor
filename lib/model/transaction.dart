@@ -6,6 +6,7 @@ class Transactions {
   final String transactionId;
   final Timestamp orderedAt;
   final int duration;
+  final String address;
   final String paymentMethod;
   final double totalPrice;
   final String snapToken;
@@ -20,6 +21,7 @@ class Transactions {
     required this.duration,
     required this.totalPrice,
     required this.status,
+    required this.address,
   });
   factory Transactions.fromJson(Map<String, dynamic> json) => Transactions(
         userId: json['userId'] as String,
@@ -28,17 +30,19 @@ class Transactions {
         orderedAt: json['orderedAt'] as Timestamp,
         duration: json['duration'] as int,
         snapToken: json['snap_token'],
+        address: json['address'],
         paymentMethod: json['payment_method'] as String,
         totalPrice: json['total_price'] as double,
         status: json['status'] as String,
       );
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'motorId': motorId,
+        'userId': FirebaseFirestore.instance.collection('Users').doc(userId),
+        'motorId': FirebaseFirestore.instance.collection('motor').doc(motorId),
         'transactionId': transactionId,
         'orderedAt': orderedAt,
         'snap_token': snapToken,
+        'adress': address,
         'payment_method': paymentMethod,
         'duration': duration,
         'total_price': totalPrice,

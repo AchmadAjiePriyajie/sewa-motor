@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
+import 'package:sewa_motor/Services/user_services.dart';
 import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/pages/transaction_page.dart';
 
@@ -16,6 +19,8 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   Future<DocumentSnapshot?>? _motorData; // Use a Future to hold the data
   MotorService motorService = MotorService();
+  final user = FirebaseAuth.instance.currentUser!;
+  UserService userService = UserService();
 
   @override
   void initState() {
@@ -162,18 +167,37 @@ class _ProductPageState extends State<ProductPage> {
                           'Kapasitas : ' + kapasitasMesin.toString() + ' cc'),
                       Divider(),
                       SizedBox(
-                        height: 150,
+                        height: 50,
                       ),
-                      MyButton(
-                        text: "Pesan Sekarang",
-                        fontSize: 13,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                TransactionPage(motorId: widget.docID),
-                          ),
-                        ),
+                      FutureBuilder<DocumentSnapshot?>(
+                        future: userService.getUserById(user.email!),
+                        builder: (context, snapshot) {
+                          print(snapshot.data!['transactionId'] != '');
+                          return snapshot.data!['transactionId'] == ''
+                              ? MyButton(
+                                  text: "Pesan Sekarang",
+                                  fontSize: 13,
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TransactionPage(
+                                          motorId: widget.docID),
+                                    ),
+                                  ),
+                                )
+                              : MyButton(
+                                  disabled: true,
+                                  text: "Pesan Sekarang",
+                                  fontSize: 13,
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TransactionPage(
+                                          motorId: widget.docID),
+                                    ),
+                                  ),
+                                );
+                        },
                       ),
                     ],
                   ),

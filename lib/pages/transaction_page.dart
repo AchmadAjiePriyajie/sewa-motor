@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sewa_motor/Services/midtrans_services.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/Services/transaction_service.dart';
 import 'package:sewa_motor/Services/user_services.dart';
@@ -20,43 +21,70 @@ class TransactionPage extends StatefulWidget {
   State<TransactionPage> createState() => _TransactionPageState();
 }
 
-List<String> metodePembayaran = ['Mandiri', 'Cash', 'Dana'];
+List<String> metodePembayaran = ['Transfer', 'Cash'];
+
+List<String> metodePengambilan = ['di ambil', 'di antar'];
 
 class _TransactionPageState extends State<TransactionPage> {
-  TextEditingController namaLengkapController = TextEditingController();
-
   TextEditingController durasiController = TextEditingController();
+
+  TextEditingController addressController = TextEditingController();
 
   TransactionService transactionService = TransactionService();
 
   String selectedMethod = metodePembayaran.first;
 
+  String selectedPengambilan = metodePengambilan.first;
+
   MotorService motorService = MotorService();
 
-  DocumentSnapshot? _motorData;
+  Future<DocumentSnapshot?>? _motorData;
 
   final user = FirebaseAuth.instance.currentUser!;
 
   UserService userService = UserService();
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    _motorData = await motorService.getMotorById(widget.motorId);
+    _motorData = motorService.getMotorById(widget.motorId);
   }
 
-  void createTransaction() {
+  void createTransaction() async {
+    DocumentSnapshot? mData = await _motorData;
+    String address = addressController.text;
     int duration = int.parse(durasiController.text);
-    int harga = _motorData?['harga'];
+    int harga = mData?['harga'];
     double totalPrice = harga * duration.toDouble();
 
-    transactionService.createTransaction(
+    String transactionID = await transactionService.createTransaction(
       user.email!,
       widget.motorId,
       duration,
       selectedMethod,
       totalPrice,
+      address,
     );
+    userService.updateUserTransctionId(user.email!, transactionID);
+    if (selectedMethod == 'Transfer') {
+      String snapToken = await MidtransService.createTransaction({
+        'transaction_details': {
+          'order_id': transactionID,
+          'gross_amount': totalPrice
+        }
+      });
+
+      motorService.updateMotorStatus(widget.motorId, true);
+      transactionService.updateSnapById(transactionID, snapToken);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(
+            bottomNavIdx: 1,
+          ),
+        ),
+      );
+    }
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -130,7 +158,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         height: 10,
                       ),
                       Text(
-                        'Nama Lengkap',
+                        'Metode Pengambilan',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -139,18 +167,66 @@ class _TransactionPageState extends State<TransactionPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      MyTextField(
-                        obscureText: false,
-                        hintText: 'Nama Lengkap',
-                        controller: namaLengkapController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Nama Lengkap Kosong';
-                          } else {
-                            return null;
-                          }
+                      DropdownButtonFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        items: metodePengambilan
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              ),
+                            )
+                            .toList(),
+                        value: selectedPengambilan,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedPengambilan = newValue!;
+                          });
                         },
                       ),
+                      selectedPengambilan == 'di antar'
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  'Alamat Lengkap',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                MyTextField(
+                                  maxLine: 3,
+                                  obscureText: false,
+                                  keyboardType: TextInputType.multiline,
+                                  hintText: 'Alamat Lengkap',
+                                  controller: addressController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Alamat Kosong';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ],
+                            )
+                          : SizedBox(),
                       const SizedBox(
                         height: 15,
                       ),
@@ -217,18 +293,9 @@ class _TransactionPageState extends State<TransactionPage> {
                         fontSize: 20,
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
-                            namaLengkapController.clear();
-                            durasiController.clear();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return MainPage(
-                                    bottomNavIdx: 1,
-                                  );
-                                },
-                              ),
-                            );
+                            createTransaction();
+                            // namaLengkapController.clear();
+                            // durasiController.clear();
                           }
                         },
                       ),
