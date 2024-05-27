@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:midtrans_snap/midtrans_snap.dart';
 import 'package:midtrans_snap/models.dart';
 import 'package:sewa_motor/Services/transaction_service.dart';
+import 'package:sewa_motor/pages/main_page.dart';
 
 class PaymentPage extends StatelessWidget {
   final String token;
@@ -29,6 +30,14 @@ class PaymentPage extends StatelessWidget {
         },
         onResponse: (result) {
           transactionService.updateStatusById(transactionId, 'Paid');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainPage(
+                bottomNavIdx: 1,
+              ),
+            ),
+          );
         },
       ),
     );
