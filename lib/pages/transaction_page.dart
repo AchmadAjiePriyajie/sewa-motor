@@ -76,8 +76,18 @@ class _TransactionPageState extends State<TransactionPage> {
         }
       });
 
-      motorService.updateMotorStatus(widget.motorId, true);
       transactionService.updateSnapById(transactionID, snapToken);
+      motorService.updateMotorStatus(widget.motorId, true);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(
+            bottomNavIdx: 1,
+          ),
+        ),
+      );
+    } else {
+      motorService.updateMotorStatus(widget.motorId, true);
       Navigator.push(
         context,
         MaterialPageRoute(

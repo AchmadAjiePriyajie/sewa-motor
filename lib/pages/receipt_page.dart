@@ -288,22 +288,24 @@ class _ReceiptPageState extends State<ReceiptPage> {
                 fontWeight: FontWeight.w400,
               ),
               SizedBox(height: 15),
-              MyButton(
-                disabled: metodePembayaran != 'Transfer',
-                text: 'Bayar Sekarang',
-                fontSize: 15,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentPage(
-                        token: token,
-                        transactionId: kodePemesanan,
-                      ),
-                    ),
-                  );
-                },
-              ),
+              statusPembayaran == 'Pending'
+                  ? MyButton(
+                      disabled: metodePembayaran != 'Transfer',
+                      text: 'Bayar Sekarang',
+                      fontSize: 15,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentPage(
+                              token: token,
+                              transactionId: kodePemesanan,
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : SizedBox(),
             ],
           ),
         ),
