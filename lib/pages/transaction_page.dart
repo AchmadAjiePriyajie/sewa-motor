@@ -25,6 +25,8 @@ List<String> metodePembayaran = ['Transfer', 'Cash'];
 
 List<String> metodePengambilan = ['di ambil', 'di antar'];
 
+bool _isLoading = false;
+
 class _TransactionPageState extends State<TransactionPage> {
   TextEditingController durasiController = TextEditingController();
 

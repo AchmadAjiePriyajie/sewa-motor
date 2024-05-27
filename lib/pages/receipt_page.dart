@@ -10,7 +10,7 @@ import 'package:sewa_motor/components/my_text.dart';
 import 'package:sewa_motor/pages/payment_page.dart';
 
 class ReceiptPage extends StatefulWidget {
-  ReceiptPage({super.key});
+  const ReceiptPage({super.key});
 
   @override
   State<ReceiptPage> createState() => _ReceiptPageState();
@@ -18,21 +18,9 @@ class ReceiptPage extends StatefulWidget {
 
 class _ReceiptPageState extends State<ReceiptPage> {
   final user = FirebaseAuth.instance.currentUser!;
-  TransactionService transactionService = TransactionService();
-  UserService userService = UserService();
-  MotorService motorService = MotorService();
-  String? _transactionId;
-  // Future<DocumentSnapshot?>? _transactionData;
-  // Future<DocumentSnapshot?>? _userData;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    userService
-        .getUserById(user.email!)
-        .then((value) => {_transactionId = value['transactionId']!});
-  }
+  final TransactionService transactionService = TransactionService();
+  final UserService userService = UserService();
+  final MotorService motorService = MotorService();
 
   @override
   Widget build(BuildContext context) {
@@ -41,28 +29,24 @@ class _ReceiptPageState extends State<ReceiptPage> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.lightBlue[600],
         toolbarHeight: 70,
-        title: Column(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Receipt',
-                  style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/profile_page');
-                  },
-                  child: Image.asset(
-                    'images/profile.png',
-                    width: 40,
-                  ),
-                ),
-              ],
+            Text(
+              'Receipt',
+              style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/profile_page');
+              },
+              child: Image.asset(
+                'images/profile.png',
+                width: 40,
+              ),
             ),
           ],
         ),
@@ -71,51 +55,85 @@ class _ReceiptPageState extends State<ReceiptPage> {
         child: FutureBuilder<DocumentSnapshot?>(
           future: userService.getUserById(user.email!),
           builder: (context, snapshot) {
-            return FutureBuilder<DocumentSnapshot?>(
-              future: transactionService
-                  .getTransactionById(snapshot.data!['transactionId']),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(
-                    'Anda belum melakukan transaksi',
-                  ); // Handle errors
-                }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator(); // Show loading indicator
-                }
+            if (snapshot.hasError) {
+              return const Center(child: Text('Error loading user data'));
+            }
 
-                DocumentSnapshot transactionDoc = snapshot.data!;
-                if (!transactionDoc.exists) {
-                  return const Text(
-                    'Transaction not found',
-                  ); // Handle non-existent motor
-                }
-                String transactionId = transactionDoc['transactionId'];
-                int durasiSewa = transactionDoc['duration'];
-                double total = transactionDoc['total_price'];
-                String metodePembayaran = transactionDoc['payment_method'];
-                String statusPembayaran = transactionDoc['status'];
-                String token = transactionDoc['snap_token'];
+            if (!snapshot.hasData || !snapshot.data!.exists) {
+              return const Center(child: Text('User data not found'));
+            }
 
-                DocumentReference motorData = transactionDoc['motorId'];
-                return FutureBuilder(
-                  future: motorData.get(),
-                  builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    return receipt(
-                      transactionId,
-                      snapshot.data!['namaMotor'],
-                      durasiSewa,
-                      snapshot.data!['harga'],
-                      total,
-                      metodePembayaran,
-                      statusPembayaran,
-                      token,
-                    );
-                  },
-                );
-              },
-            );
+            DocumentSnapshot _userData = snapshot.data!;
+            String transactionId = _userData['transactionId'];
+            if (transactionId.isNotEmpty) {
+              return FutureBuilder<DocumentSnapshot?>(
+                future: transactionService.getTransactionById(transactionId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Error loading transaction data'));
+                  }
+
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return const Center(child: Text('Transaction not found'));
+                  }
+
+                  DocumentSnapshot transactionDoc = snapshot.data!;
+                  String transactionId = transactionDoc['transactionId'];
+                  int durasiSewa = transactionDoc['duration'];
+                  double total = transactionDoc['total_price'];
+                  String metodePembayaran = transactionDoc['payment_method'];
+                  String statusPembayaran = transactionDoc['status'];
+                  String token = transactionDoc['snap_token'];
+
+                  DocumentReference motorRef = transactionDoc['motorId'];
+                  return FutureBuilder<DocumentSnapshot?>(
+                    future: motorRef.get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (snapshot.hasError) {
+                        return const Center(
+                            child: Text('Error loading motor data'));
+                      }
+
+                      if (!snapshot.hasData || !snapshot.data!.exists) {
+                        return const Center(
+                            child: Text('Motor data not found'));
+                      }
+
+                      DocumentSnapshot motorDoc = snapshot.data!;
+                      String namaMotor = motorDoc['namaMotor'];
+                      int harga = motorDoc['harga'];
+
+                      return receipt(
+                        transactionId,
+                        namaMotor,
+                        durasiSewa,
+                        harga,
+                        total,
+                        metodePembayaran,
+                        statusPembayaran,
+                        token,
+                      );
+                    },
+                  );
+                },
+              );
+            } else {
+              return const Center(
+                  child: Text('Anda belum melakukan transaksi'));
+            }
           },
         ),
       ),
@@ -159,48 +177,9 @@ class _ReceiptPageState extends State<ReceiptPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: MyText(
-                      text: '00',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: MyText(
-                      text: '00',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: MyText(
-                      text: '00',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  timeBox('00'),
+                  timeBox('00'),
+                  timeBox('00'),
                 ],
               ),
             ],
@@ -215,6 +194,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
             color: Colors.white,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -226,163 +206,125 @@ class _ReceiptPageState extends State<ReceiptPage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Icon(Icons.access_time),
-                  )
+                  ),
                 ],
               ),
               Divider(),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Kode Pemesanan',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500),
-                ],
+              SizedBox(height: 10),
+              MyText(
+                text: 'Kode Pemesanan',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              Row(
-                children: [
-                  MyText(
-                      text: kodePemesanan,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ],
+              MyText(
+                text: kodePemesanan,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
-              SizedBox(
-                height: 10,
+              SizedBox(height: 10),
+              MyText(
+                text: 'Nama Motor',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Nama Motor',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500),
-                ],
+              MyText(
+                text: namaMotor,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
-              Row(
-                children: [
-                  MyText(
-                      text: namaMotor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ],
+              SizedBox(height: 10),
+              MyText(
+                text: 'Durasi Sewa',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              SizedBox(
-                height: 10,
+              MyText(
+                text: '$durasiSewa jam',
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Durasi Sewa',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500),
-                ],
+              SizedBox(height: 10),
+              MyText(
+                text: 'Harga Sewa',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              Row(
-                children: [
-                  MyText(
-                    text: '${durasiSewa.toString()} jam',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ],
+              MyText(
+                text: 'Rp.$hargaSewa',
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
-              SizedBox(
-                height: 10,
+              SizedBox(height: 10),
+              MyText(
+                text: 'Total',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Harga Sewa',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500),
-                ],
+              MyText(
+                text: 'Rp.$total',
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Rp.${hargaSewa.toString()}',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ],
+              SizedBox(height: 10),
+              MyText(
+                text: 'Metode Pembayaran',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              SizedBox(
-                height: 10,
+              MyText(
+                text: metodePembayaran,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
-              Row(
-                children: [
-                  MyText(
-                    text: 'Total',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ],
+              SizedBox(height: 10),
+              MyText(
+                text: 'Status Pembayaran',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Rp.${total.toString()}',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ],
+              MyText(
+                text: statusPembayaran,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Metode Pembayaran',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500),
-                ],
-              ),
-              Row(
-                children: [
-                  MyText(
-                      text: metodePembayaran,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  MyText(
-                      text: 'Status Pembayaran',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500),
-                ],
-              ),
-              Row(
-                children: [
-                  MyText(
-                      text: statusPembayaran,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
+              SizedBox(height: 15),
               MyButton(
-                text: 'Pesan Sekarang',
+                disabled: metodePembayaran != 'Transfer',
+                text: 'Bayar Sekarang',
                 fontSize: 15,
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentPage(
-                          token: token,
-                          transactionId: _transactionId!,
-                        ),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentPage(
+                        token: token,
+                        transactionId: kodePemesanan,
+                      ),
+                    ),
+                  );
                 },
-              )
+              ),
             ],
           ),
-        )
+        ),
       ],
+    );
+  }
+
+  Widget timeBox(String time) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: MyText(
+        text: time,
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
 }
