@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/components/my_button.dart';
-import 'package:sewa_motor/components/my_textfield.dart';
 import 'package:sewa_motor/components/popup_message.dart';
 
 class LoginPage extends StatefulWidget {
@@ -32,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      Navigator.pop(context);
+          Navigator.popAndPushNamed(context, '/auth_page');
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       // Stop Loading
@@ -115,11 +114,21 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    MyTextField(
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: false,
-                      hintText: 'Email',
-                      controller: emailController,
+                    SizedBox(
+                      height: 50,
+                      child: TextField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     SizedBox(
                       height: 15,

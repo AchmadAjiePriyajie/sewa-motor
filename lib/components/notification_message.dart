@@ -14,7 +14,7 @@ class NotifMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(15),
+      margin: EdgeInsets.only(top:15 ,left: 15,right: 15),
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,

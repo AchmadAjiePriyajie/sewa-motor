@@ -46,6 +46,7 @@ dependencies:
   http: ^1.2.1
   midtrans_snap: ^1.0.1
   webview_flutter: ^4.7.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

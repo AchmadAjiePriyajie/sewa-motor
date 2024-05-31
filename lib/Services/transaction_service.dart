@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/model/transaction.dart';
 
@@ -16,6 +15,11 @@ class TransactionService {
     double totalPrice,
     String address,
   ) {
+    Timestamp orderedAt = Timestamp.now();
+    DateTime orderedAtDateTime = orderedAt.toDate();
+    DateTime endDurationDateTime = orderedAtDateTime.add(Duration(hours: duration));
+    Timestamp endDuration = Timestamp.fromDate(endDurationDateTime);
+
     String transactionID =
         'TR-${Timestamp.now().microsecondsSinceEpoch.toString()}';
     transaction.doc(transactionID).set(
@@ -27,6 +31,7 @@ class TransactionService {
             snapToken: '',
             paymentMethod: paymentMethod,
             duration: duration,
+            endDuration: endDuration,
             totalPrice: totalPrice,
             status: 'Pending',
             address: address,

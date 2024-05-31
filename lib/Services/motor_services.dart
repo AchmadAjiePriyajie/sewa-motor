@@ -21,10 +21,10 @@ class MotorService {
     );
   }
 
-  Stream<QuerySnapshot> getMotorStream() {
+  Stream<QuerySnapshot> getMotorStream(bool sorting) {
     final motorStream = motor
         .where('isOrdered', isEqualTo: false)
-        .orderBy('timestamp', descending: true)
+        .orderBy('timestamp', descending: sorting)
         .snapshots();
     return motorStream;
   }

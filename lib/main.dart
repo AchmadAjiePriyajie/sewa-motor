@@ -8,6 +8,7 @@ import 'package:sewa_motor/pages/login_page.dart';
 import 'package:sewa_motor/pages/map_page.dart';
 import 'package:sewa_motor/pages/profile_page.dart';
 import 'package:sewa_motor/pages/register_page.dart';
+import 'package:sewa_motor/pages/search_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/profile_page': (context) => ProfilePage(),
         '/auth_page': (context) => AuthPage(),
         '/map_page': (context) => MapPage(),
+        '/search_page':(context) =>  SearchPage()
       },
     );
   }

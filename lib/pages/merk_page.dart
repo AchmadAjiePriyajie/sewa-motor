@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
+import 'package:sewa_motor/components/my_text.dart';
 import 'package:sewa_motor/pages/product_page.dart';
 
 class MerkPage extends StatelessWidget {
@@ -24,54 +26,92 @@ class MerkPage extends StatelessWidget {
         ),
         backgroundColor: Colors.lightBlue[700],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: MotorService().getMotorStreamByMerk(merkId),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<DocumentSnapshot> motorList = snapshot.data!.docs;
-            return ListView.builder(
-              itemCount: motorList.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot document = motorList[index];
-                String docID = document.id;
+      body: Expanded(
+        child: StreamBuilder<QuerySnapshot>(
+          stream: MotorService().getMotorStreamByMerk(merkId),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<DocumentSnapshot> motorList = snapshot.data!.docs;
 
-                Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 0.8,
+                ),
+                padding: EdgeInsets.all(10),
+                itemCount: motorList.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot document = motorList[index];
+                  String docID = document.id;
+                  Map<String, dynamic> data =
+                      document.data() as Map<String, dynamic>;
+                  String namaMotor = data['namaMotor'];
+                  int harga = data['harga'];
+                  String imageUrl = data['Image'];
 
-                String namaMotor = data['namaMotor'];
-                int harga = data['harga'];
-                String imageUrl = data['Image'];
-                // Customize the widget to display motor information
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductPage(docID: docID),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductPage(
+                            docID: docID,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.grey.withOpacity(0.8)),
                       ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(namaMotor),
-                        subtitle: Text('Rp.${harga}/jam'),
-                        leading: Image.network(
-                          imageUrl,
-                        ), // Assuming imageUrl points to a valid image URL
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 120,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              image: DecorationImage(
+                                image: NetworkImage(imageUrl),
+                                fit: BoxFit.fitHeight
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: namaMotor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          SizedBox(height: 5),
+                          MyText(
+                            text: NumberFormat.currency(
+                                        locale: 'id',
+                                        decimalDigits: 0,
+                                        symbol: 'Rp ')
+                                    .format(harga) +
+                                '/Jam',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ],
                       ),
-                      Divider(),
-                    ],
-                  ),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          }
-          // Show a loading indicator while waiting for data
-          return Center(child: CircularProgressIndicator());
-        },
+                    ),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
   }

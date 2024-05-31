@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/Services/midtrans_services.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
+import 'package:sewa_motor/Services/notification_services.dart';
 import 'package:sewa_motor/Services/transaction_service.dart';
 import 'package:sewa_motor/Services/user_services.dart';
 import 'package:sewa_motor/components/my_button.dart';
@@ -12,7 +13,7 @@ import 'package:sewa_motor/pages/main_page.dart';
 
 class TransactionPage extends StatefulWidget {
   final String motorId;
-  TransactionPage({
+  const TransactionPage({
     super.key,
     required this.motorId,
   });
@@ -28,11 +29,14 @@ List<String> metodePengambilan = ['di ambil', 'di antar'];
 bool _isLoading = false;
 
 class _TransactionPageState extends State<TransactionPage> {
+  bool isPressed = false;
   TextEditingController durasiController = TextEditingController();
 
   TextEditingController addressController = TextEditingController();
 
   TransactionService transactionService = TransactionService();
+
+  NotificationServices notificationServices = NotificationServices();
 
   String selectedMethod = metodePembayaran.first;
 
@@ -67,6 +71,12 @@ class _TransactionPageState extends State<TransactionPage> {
       totalPrice,
       address,
     );
+    notificationServices.addNotif(
+        'Horee! Pesanan Kamu Berhasil nih',
+        'Pesanan ${transactionID} Telah dibuat, Silahkan lanjutkan transaksi',
+        user.email!,
+        transactionID);
+
     userService.updateUserTransctionId(user.email!, transactionID);
     if (selectedMethod == 'Transfer') {
       String snapToken = await MidtransService.createTransaction({
@@ -78,6 +88,16 @@ class _TransactionPageState extends State<TransactionPage> {
 
       motorService.updateMotorStatus(widget.motorId, true);
       transactionService.updateSnapById(transactionID, snapToken);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(
+            bottomNavIdx: 1,
+          ),
+        ),
+      );
+    } else {
+      motorService.updateMotorStatus(widget.motorId, true);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -291,9 +311,11 @@ class _TransactionPageState extends State<TransactionPage> {
                         height: 20,
                       ),
                       MyButton(
+                        disabled: isPressed == true,
                         text: 'Lanjutkan',
                         fontSize: 20,
                         onTap: () {
+                          isPressed = true;
                           if (_formKey.currentState!.validate()) {
                             createTransaction();
                             // namaLengkapController.clear();

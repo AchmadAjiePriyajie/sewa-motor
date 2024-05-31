@@ -6,7 +6,7 @@ import 'package:sewa_motor/pages/receipt_page.dart';
 
 class MainPage extends StatefulWidget {
   final int? bottomNavIdx;
-  MainPage({super.key, this.bottomNavIdx});
+  const MainPage({super.key, this.bottomNavIdx});
 
   @override
   State<MainPage> createState() => _HomePageState();
@@ -35,7 +35,7 @@ class _HomePageState extends State<MainPage> {
       body: tabs[myIndex],
       bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.white,
-          color: Colors.lightBlue[600]!,
+          color: Colors.lightBlue[800]!,
           animationDuration: const Duration(milliseconds: 300),
           index: myIndex,
           onTap: (index) {

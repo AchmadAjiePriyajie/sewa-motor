@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/Services/user_services.dart';
 import 'package:sewa_motor/components/my_button.dart';
@@ -125,7 +126,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 15,
                       ),
                       Text(
-                        'Rp.' + harga.toString() + ' / Jam',
+                        NumberFormat.currency(locale: 'id', decimalDigits: 0, symbol: 'Rp ').format(harga) + ' / Jam',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -172,8 +173,8 @@ class _ProductPageState extends State<ProductPage> {
                       FutureBuilder<DocumentSnapshot?>(
                         future: userService.getUserById(user.email!),
                         builder: (context, snapshot) {
-                          print(snapshot.data!['transactionId'] != '');
-                          return snapshot.data!['transactionId'] == ''
+                          print(snapshot.data?['transactionId'] != '');
+                          return snapshot.data?['transactionId'] == ''
                               ? MyButton(
                                   text: "Pesan Sekarang",
                                   fontSize: 13,

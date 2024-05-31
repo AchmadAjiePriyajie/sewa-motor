@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/components/my_text.dart';
-import 'package:sewa_motor/components/my_textfield.dart';
 import 'package:sewa_motor/pages/merk_page.dart';
 import 'package:sewa_motor/pages/product_page.dart';
 
@@ -69,39 +70,42 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-              ),
-              child: MyTextField(
-                obscureText: false,
-                hintText: 'Search',
-                controller: searchController,
-              ),
-            ),
             // Container(
             //   decoration: BoxDecoration(
-            //       color: Colors.white, borderRadius: BorderRadius.circular(12)),
-            //   child: Row(
-            //     children: [
-            //       Padding(
-            //         padding: const EdgeInsets.all(8.0),
-            //         child: Icon(Icons.search),
-            //       ),
-            //       TextField(
-
-            //       ),
-            //       Text(
-            //         'Search',
-            //         style: GoogleFonts.poppins(
-            //           fontSize: 14,
-            //           fontWeight: FontWeight.w500,
-            //         ),
-            //       )
-            //     ],
+            //     borderRadius: BorderRadius.circular(12),
+            //     color: Colors.white,
             //   ),
-            // )
+            //   child: MyTextField(
+            //     obscureText: false,
+            //     hintText: 'Search',
+            //     controller: searchController,
+            //     height: 40,
+            //   ),
+            // ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/search_page');
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white, borderRadius: BorderRadius.circular(12)),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.search),
+                    ),
+                    Text(
+                      'Search',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -257,11 +261,11 @@ class _HomePageState extends State<HomePage> {
 
             SizedBox(height: 10), // Add some spacing between sections
 
-            // New Product Section
+            // Newf Product Section
             Container(
-              height: 200, // Set a fixed height for the new product section
+              height: 220, // Set a fixed height for the new product section
               child: StreamBuilder<QuerySnapshot>(
-                  stream: motorService.getMotorStream(),
+                  stream: motorService.getMotorStream(true),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<DocumentSnapshot> motorList = snapshot.data!.docs;
@@ -276,31 +280,31 @@ class _HomePageState extends State<HomePage> {
                           String namaMotor = data['namaMotor'];
                           int harga = data['harga'];
                           String imageUrl = data['Image'];
-                          return Container(
-                            padding:
-                                EdgeInsets.only(left: 15, right: 8, top: 10),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                  color: Colors.grey.withOpacity(0.8)),
-                            ),
-                            child: Column(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ProductPage(
-                                          docID: docID,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductPage(
+                                    docID: docID,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding:
+                                  EdgeInsets.only(left: 15, right: 8, top: 10),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                    color: Colors.grey.withOpacity(0.8)),
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
                                     height: 120,
                                     width: 150,
                                     decoration: BoxDecoration(
@@ -311,24 +315,29 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                MyText(
-                                  text: namaMotor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                MyText(
-                                  text: 'Rp. $harga',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ],
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  MyText(
+                                    text: namaMotor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  MyText(
+                                    text: NumberFormat.currency(
+                                                locale: 'id',
+                                                decimalDigits: 0,
+                                                symbol: 'Rp ')
+                                            .format(harga) +
+                                        '/Jam',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -364,9 +373,9 @@ class _HomePageState extends State<HomePage> {
 
             // Popular Product Section
             Container(
-              height: 200, // Set a fixed height for the popular product section
+              height: 220, // Set a fixed height for the popular product section
               child: StreamBuilder<QuerySnapshot>(
-                  stream: motorService.getMotorStream(),
+                  stream: motorService.getMotorStream(false),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<DocumentSnapshot> motorList = snapshot.data!.docs;
@@ -381,31 +390,31 @@ class _HomePageState extends State<HomePage> {
                           String namaMotor = data['namaMotor'];
                           int harga = data['harga'];
                           String imageUrl = data['Image'];
-                          return Container(
-                            padding:
-                                EdgeInsets.only(left: 15, right: 8, top: 10),
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                  color: Colors.grey.withOpacity(0.8)),
-                            ),
-                            child: Column(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ProductPage(
-                                          docID: docID,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductPage(
+                                    docID: docID,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding:
+                                  EdgeInsets.only(left: 15, right: 8, top: 10),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                    color: Colors.grey.withOpacity(0.8)),
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
                                     height: 120,
                                     width: 150,
                                     decoration: BoxDecoration(
@@ -416,24 +425,29 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                MyText(
-                                  text: namaMotor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                MyText(
-                                  text: 'Rp. $harga',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ],
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  MyText(
+                                    text: namaMotor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  MyText(
+                                    text: NumberFormat.currency(
+                                                locale: 'id',
+                                                decimalDigits: 0,
+                                                symbol: 'Rp ')
+                                            .format(harga) +
+                                        '/Jam',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },
