@@ -119,7 +119,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                   horizontal: 20, vertical: 20),
                               padding: EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(10),
                                   color: Colors.red.withOpacity(0.2)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -284,7 +284,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
                 ],
               ),
               Divider(),
-              SizedBox(height: 10),
               buildDetailRow('Kode Pemesanan', kodePemesanan),
               buildDetailRow('Nama Motor', namaMotor),
               buildDetailRow('Durasi Sewa', '$durasiSewa Jam'),
