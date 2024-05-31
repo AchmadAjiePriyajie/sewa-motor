@@ -44,7 +44,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
         backgroundColor: Colors.lightBlue[800],
       ),
       body: SizedBox(
-        height: 450,
+        height: 600,
         child: FutureBuilder(
           future: _transactionData,
           builder: (context, snapshot) {
@@ -83,131 +83,226 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                 String namaMotor = motorDoc['namaMotor'];
                 int harga = motorDoc['harga'];
 
-                return Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                return Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(
+                          left: 10, right: 10, bottom: 10, top: 10),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Row(
                         children: [
-                          MyText(
-                            text: 'Rincian Pesanan',
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                          Image.network(
+                            snapshot.data?['Image'],
+                            height: 90,
+                            width: 100,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Icon(Icons.access_time),
-                          ),
+                          Container(
+                            height: 90,
+                            width: 250,
+                            padding: EdgeInsets.only(left: 10),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      namaMotor,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'ID : ' + transaksi,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Total : ' +
+                                          NumberFormat.currency(
+                                                  locale: 'id',
+                                                  decimalDigits: 0,
+                                                  symbol: 'Rp ')
+                                              .format(harga),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: statusPembayaran == 'Completed'
+                                              ? Colors.green
+                                              : Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: Text(
+                                          statusPembayaran,
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                      Divider(),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: 'Kode Pemesanan',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              MyText(
+                                text: 'Rincian Pesanan',
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Icon(Icons.access_time),
+                              ),
+                            ],
+                          ),
+                          Divider(),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: 'Kode Pemesanan',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          MyText(
+                            text: transaksi,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: 'Nama Motor',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          MyText(
+                            text: namaMotor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: 'Durasi Sewa',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          MyText(
+                            text: '$durasiSewa jam',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: 'Harga Sewa',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          MyText(
+                            text: NumberFormat.currency(
+                                    locale: 'id',
+                                    decimalDigits: 0,
+                                    symbol: 'Rp ')
+                                .format(harga),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: 'Total',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          MyText(
+                            text: NumberFormat.currency(
+                                    locale: 'id',
+                                    decimalDigits: 0,
+                                    symbol: 'Rp ')
+                                .format(total),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: 'Metode Pembayaran',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          MyText(
+                            text: metodePembayaran,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(height: 10),
+                          MyText(
+                            text: 'Status Pembayaran',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          MyText(
+                            text: statusPembayaran,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(height: 15),
+                          statusPembayaran == 'Pending' &&
+                                  metodePembayaran == 'Transfer'
+                              ? MyButton(
+                                  text: 'Bayar Sekarang',
+                                  fontSize: 15,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PaymentPage(
+                                          token: token,
+                                          transactionId: transaksi,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : SizedBox(),
+                        ],
                       ),
-                      MyText(
-                        text: transaksi,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: 'Nama Motor',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      MyText(
-                        text: namaMotor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: 'Durasi Sewa',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      MyText(
-                        text: '$durasiSewa jam',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: 'Harga Sewa',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      MyText(
-                        text: NumberFormat.currency(
-                                locale: 'id', decimalDigits: 0, symbol: 'Rp ')
-                            .format(harga),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: 'Total',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      MyText(
-                        text: NumberFormat.currency(
-                                locale: 'id', decimalDigits: 0, symbol: 'Rp ')
-                            .format(total),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: 'Metode Pembayaran',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      MyText(
-                        text: metodePembayaran,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: 'Status Pembayaran',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      MyText(
-                        text: statusPembayaran,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      SizedBox(height: 15),
-                      statusPembayaran == 'Pending' &&
-                              metodePembayaran == 'Transfer'
-                          ? MyButton(
-                              text: 'Bayar Sekarang',
-                              fontSize: 15,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PaymentPage(
-                                      token: token,
-                                      transactionId: transaksi,
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                          : SizedBox(),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             );

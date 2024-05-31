@@ -7,6 +7,7 @@ import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/components/my_text.dart';
 import 'package:sewa_motor/pages/merk_page.dart';
 import 'package:sewa_motor/pages/product_page.dart';
+import 'package:sewa_motor/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -84,7 +85,7 @@ class _HomePageState extends State<HomePage> {
             // ),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/search_page');
+                showSearch(context: context, delegate: Search());
               },
               child: Container(
                 decoration: BoxDecoration(
