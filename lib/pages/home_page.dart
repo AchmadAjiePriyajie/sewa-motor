@@ -89,7 +89,8 @@ class _HomePageState extends State<HomePage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.white, borderRadius: BorderRadius.circular(12)),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12)),
                 child: Row(
                   children: [
                     Padding(
@@ -249,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'New Product',
+                    'Produk Terbaru',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -271,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.hasData) {
                       List<DocumentSnapshot> motorList = snapshot.data!.docs;
                       return ListView.builder(
-                        itemCount: 4,
+                        itemCount: motorList.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           DocumentSnapshot document = motorList[index];
@@ -281,6 +282,7 @@ class _HomePageState extends State<HomePage> {
                           String namaMotor = data['namaMotor'];
                           int harga = data['harga'];
                           String imageUrl = data['Image'];
+                          int totalPenjualan = data['totalPenjualan'];
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -299,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                                   vertical: 8, horizontal: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                     color: Colors.grey.withOpacity(0.8)),
                               ),
@@ -312,30 +314,56 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(12),
                                       image: DecorationImage(
                                         image: NetworkImage(imageUrl),
-                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  MyText(
-                                    text: namaMotor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  MyText(
-                                    text: NumberFormat.currency(
-                                                locale: 'id',
-                                                decimalDigits: 0,
-                                                symbol: 'Rp ')
-                                            .format(harga) +
-                                        '/Jam',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
+                                  Container(
+                                    width: 170,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        MyText(
+                                          text: namaMotor,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            MyText(
+                                              text: NumberFormat.currency(
+                                                          locale: 'id',
+                                                          decimalDigits: 0,
+                                                          symbol: 'Rp ')
+                                                      .format(harga) +
+                                                  '/Jam',
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                MyText(
+                                                  text:
+                                                      '${totalPenjualan} tersewa',
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -359,7 +387,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Popular Product',
+                    'Produk Populer',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -376,7 +404,7 @@ class _HomePageState extends State<HomePage> {
             Container(
               height: 220, // Set a fixed height for the popular product section
               child: StreamBuilder<QuerySnapshot>(
-                  stream: motorService.getMotorStream(false),
+                  stream: motorService.getMotorStreamBySales(false),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<DocumentSnapshot> motorList = snapshot.data!.docs;
@@ -391,6 +419,7 @@ class _HomePageState extends State<HomePage> {
                           String namaMotor = data['namaMotor'];
                           int harga = data['harga'];
                           String imageUrl = data['Image'];
+                          int totalPenjualan = data['totalPenjualan'];
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -409,7 +438,7 @@ class _HomePageState extends State<HomePage> {
                                   vertical: 8, horizontal: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                     color: Colors.grey.withOpacity(0.8)),
                               ),
@@ -422,30 +451,56 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(12),
                                       image: DecorationImage(
                                         image: NetworkImage(imageUrl),
-                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  MyText(
-                                    text: namaMotor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  MyText(
-                                    text: NumberFormat.currency(
-                                                locale: 'id',
-                                                decimalDigits: 0,
-                                                symbol: 'Rp ')
-                                            .format(harga) +
-                                        '/Jam',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
+                                  Container(
+                                    width: 170,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        MyText(
+                                          text: namaMotor,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            MyText(
+                                              text: NumberFormat.currency(
+                                                          locale: 'id',
+                                                          decimalDigits: 0,
+                                                          symbol: 'Rp ')
+                                                      .format(harga) +
+                                                  '/Jam',
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                MyText(
+                                                  text:
+                                                      '${totalPenjualan} tersewa',
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),

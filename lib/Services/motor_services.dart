@@ -29,6 +29,15 @@ class MotorService {
     return motorStream;
   }
 
+  Stream<QuerySnapshot> getMotorStreamBySales(bool sorting) {
+    final motorStream = motor
+        .where('isOrdered', isEqualTo: false)
+        .orderBy('totalPenjualan', descending: true)
+        .orderBy('timestamp', descending: sorting)
+        .snapshots();
+    return motorStream;
+  }
+
   Stream<QuerySnapshot> getMotorStreamByMerk(String merk) {
     final motorStream = motor
         .where("merk", isEqualTo: merk)
@@ -53,28 +62,11 @@ class MotorService {
     return motorData.delete();
   }
 
-  Future<void> updateMotor(String docID, String namaMotor, int kapasitasMesin,
-      int harga, String merk, String imageUrl) async {
-    DocumentReference docRef = motor.doc(docID);
-
-    await docRef.update(
-      Motor(
-        namaMotor: namaMotor,
-        harga: harga,
-        merk: merk,
-        kapasitasMesin: kapasitasMesin,
-        imageUrl: imageUrl,
-        isOrdered: false,
-      ) as Map<Object, Object?>,
-    );
-  }
-
   Future<List<Motor>> getMotorMerk(String merk) async {
     QuerySnapshot query = await motor.where("merk", isEqualTo: merk).get();
     List<Motor> motorList = query.docs
         .map((doc) => Motor.fromJson(doc.data() as Map<String, dynamic>))
         .toList();
-
     return motorList;
   }
 

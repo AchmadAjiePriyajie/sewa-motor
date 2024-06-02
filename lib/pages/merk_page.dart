@@ -37,7 +37,7 @@ class MerkPage extends StatelessWidget {
                   crossAxisCount: 2,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
-                  childAspectRatio: 0.9,
+                  childAspectRatio: 0.98,
                 ),
                 padding: EdgeInsets.all(10),
                 itemCount: motorList.length,
@@ -49,6 +49,7 @@ class MerkPage extends StatelessWidget {
                   String namaMotor = data['namaMotor'];
                   int harga = data['harga'];
                   String imageUrl = data['Image'];
+                  int totalPenjualan = data['totalPenjualan'];
 
                   return GestureDetector(
                     onTap: () {
@@ -65,7 +66,7 @@ class MerkPage extends StatelessWidget {
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey.withOpacity(0.8)),
                       ),
                       child: Column(
@@ -85,19 +86,30 @@ class MerkPage extends StatelessWidget {
                           SizedBox(height: 10),
                           MyText(
                             text: namaMotor,
-                            fontSize: 14,
+                            fontSize: 11,
                             fontWeight: FontWeight.w500,
                           ),
                           SizedBox(height: 5),
-                          MyText(
-                            text: NumberFormat.currency(
-                                        locale: 'id',
-                                        decimalDigits: 0,
-                                        symbol: 'Rp ')
-                                    .format(harga) +
-                                '/Jam',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              MyText(
+                                text: NumberFormat.currency(
+                                            locale: 'id',
+                                            decimalDigits: 0,
+                                            symbol: 'Rp ')
+                                        .format(harga) +
+                                    '/Jam',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              MyText(
+                                                  text:
+                                                      '${totalPenjualan} tersewa',
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                            ],
                           ),
                         ],
                       ),
