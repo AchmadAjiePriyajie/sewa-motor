@@ -21,6 +21,11 @@ class UserService {
     return docSnapshot;
   }
 
+  Stream<QuerySnapshot> getUserStreamById(String docId) {
+    final userStream = user.where('email', isEqualTo: docId).snapshots();
+    return userStream;
+  }
+
   Future<void> updateUserTransctionId(
       String docID, String transactionId) async {
     await user.doc(docID).update({

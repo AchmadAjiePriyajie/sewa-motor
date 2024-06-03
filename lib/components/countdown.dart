@@ -1,11 +1,18 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_motor/Services/transaction_service.dart';
 import 'package:sewa_motor/components/my_text.dart';
 
 class CountdownTimer extends StatefulWidget {
   final DateTime endTime;
   final String status;
-  CountdownTimer({required this.endTime, required this.status});
+  final String docId;
+  CountdownTimer({
+    required this.endTime,
+    required this.status,
+    required this.docId,
+  });
 
   @override
   _CountdownTimerState createState() => _CountdownTimerState();
@@ -14,6 +21,7 @@ class CountdownTimer extends StatefulWidget {
 class _CountdownTimerState extends State<CountdownTimer> {
   Timer? _timer;
   late Duration _duration;
+  TransactionService transactionService = TransactionService();
 
   @override
   void initState() {
@@ -29,6 +37,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
       final remainingTime = widget.endTime.difference(DateTime.now());
       if (remainingTime.isNegative) {
         _timer?.cancel();
+        transactionService.countdownUpdate(widget.docId, Timestamp.now());
       } else {
         setState(() {
           _duration = remainingTime;
@@ -108,6 +117,4 @@ class _CountdownTimerState extends State<CountdownTimer> {
       ],
     );
   }
-
-  
 }

@@ -5,8 +5,7 @@ import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/pages/product_page.dart';
 
 class Search extends SearchDelegate {
-
-@override
+  @override
   ThemeData appBarTheme(BuildContext context) {
     return ThemeData(
       shadowColor: Colors.grey,
@@ -81,10 +80,11 @@ class Search extends SearchDelegate {
           itemBuilder: (context, index) {
             var motor = suggestions[index].data() as Map<String, dynamic>;
             return ListTile(
-              title: Text(motor['namaMotor'],style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500
-              ),),
+              title: Text(
+                motor['namaMotor'],
+                style: GoogleFonts.poppins(
+                    fontSize: 16, fontWeight: FontWeight.w500),
+              ),
               onTap: () {
                 query = motor['namaMotor'];
                 Navigator.push(
@@ -129,10 +129,13 @@ class Search extends SearchDelegate {
           itemBuilder: (context, index) {
             var motor = results[index].data() as Map<String, dynamic>;
             return ListTile(
-              title: Text(motor['namaMotor'], style: GoogleFonts.poppins(
-                fontSize: 12,
-                fontWeight: FontWeight.w600
-              ),),
+              title: Text(
+                motor['namaMotor'],
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             );
           },
         );

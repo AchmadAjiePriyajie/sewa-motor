@@ -7,6 +7,12 @@ class TransactionService {
       FirebaseFirestore.instance.collection('transactions');
   MotorService motorService = MotorService();
 
+  Future<void> countdownUpdate(String docID, Timestamp timestamp) async {
+    DocumentReference docRef = transaction.doc(docID);
+
+    await docRef.update({'endDuration': Timestamp.now()});
+  }
+
   Future<String> createTransaction(
     String userId,
     String motorId,
@@ -17,7 +23,8 @@ class TransactionService {
   ) {
     Timestamp orderedAt = Timestamp.now();
     DateTime orderedAtDateTime = orderedAt.toDate();
-    DateTime endDurationDateTime = orderedAtDateTime.add(Duration(hours: duration));
+    DateTime endDurationDateTime =
+        orderedAtDateTime.add(Duration(hours: duration));
     Timestamp endDuration = Timestamp.fromDate(endDurationDateTime);
 
     String transactionID =
@@ -52,6 +59,12 @@ class TransactionService {
     DocumentReference docRef = transaction.doc(docID);
     DocumentSnapshot docSnapshot = await docRef.get();
     return docSnapshot;
+  }
+
+  Stream<QuerySnapshot> getTransactionStreamById(String docId) {
+    final transactionStream =
+        transaction.where('transactionId', isEqualTo: docId).snapshots();
+    return transactionStream;
   }
 
   Future<void> updateStatusById(String docID, String status) async {

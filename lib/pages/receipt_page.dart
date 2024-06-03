@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
@@ -56,24 +57,28 @@ class _ReceiptPageState extends State<ReceiptPage> {
       ),
       body: Column(
         children: [
-          FutureBuilder<DocumentSnapshot>(
-            future: userService.getUserById(user.email!),
+          StreamBuilder<QuerySnapshot>(
+            stream: userService.getUserStreamById(user.email!),
             builder: (context, userSnapshot) {
               if (!userSnapshot.hasData) {
                 return SizedBox();
               }
-              var userData = userSnapshot.data!;
+              List<DocumentSnapshot> userList = userSnapshot.data!.docs;
+              var userData = userList[0];
               var transactionId = userData['transactionId'];
               if (transactionId.isEmpty) {
                 return Center(child: Text(''));
               }
-              return FutureBuilder<DocumentSnapshot>(
-                future: transactionService.getTransactionById(transactionId),
+              return StreamBuilder<QuerySnapshot>(
+                stream:
+                    transactionService.getTransactionStreamById(transactionId),
                 builder: (context, transactionSnapshot) {
                   if (!transactionSnapshot.hasData) {
                     return SizedBox();
                   }
-                  var transactionData = transactionSnapshot.data!;
+                  List<DocumentSnapshot> transactionList =
+                      transactionSnapshot.data!.docs;
+                  var transactionData = transactionList[0];
                   var statusPembayaran = transactionData['status'];
                   DateTime endDuration =
                       transactionData['endDuration'].toDate();
@@ -107,6 +112,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                   CountdownTimer(
                                     endTime: endDuration,
                                     status: statusPembayaran,
+                                    docId: transactionId,
                                   )
                                 ],
                               ),
@@ -144,8 +150,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: FutureBuilder<DocumentSnapshot>(
-                future: userService.getUserById(user.email!),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: userService.getUserStreamById(user.email!),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -155,19 +161,20 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     return const Center(child: Text('Error loading user data'));
                   }
 
-                  if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                  if (!userSnapshot.hasData) {
                     return const Center(child: Text('User data not found'));
                   }
 
-                  var userData = userSnapshot.data!;
+                  List<DocumentSnapshot> listUser = userSnapshot.data!.docs;
+                  var userData = listUser[0];
                   var transactionId = userData['transactionId'] ?? '';
                   if (transactionId.isEmpty) {
                     return const Center(
                         child: Text('Anda belum melakukan transaksi'));
                   }
-                  return FutureBuilder<DocumentSnapshot>(
-                    future:
-                        transactionService.getTransactionById(transactionId),
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: transactionService
+                        .getTransactionStreamById(transactionId),
                     builder: (context, transactionSnapshot) {
                       if (transactionSnapshot.connectionState ==
                           ConnectionState.waiting) {
@@ -179,13 +186,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             child: Text('Error loading transaction data'));
                       }
 
-                      if (!transactionSnapshot.hasData ||
-                          !transactionSnapshot.data!.exists) {
+                      if (!transactionSnapshot.hasData) {
                         return const Center(
                             child: Text('Transaction not found'));
                       }
 
-                      var transactionDoc = transactionSnapshot.data!;
+                      List<DocumentSnapshot> transactionList =
+                          transactionSnapshot.data!.docs;
+                      var transactionDoc = transactionList[0];
                       var durasiSewa = transactionDoc['duration'];
                       var total = transactionDoc['total_price'];
                       var metodePembayaran = transactionDoc['payment_method'];
