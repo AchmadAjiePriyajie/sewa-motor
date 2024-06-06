@@ -36,7 +36,9 @@ class _PaymentPageState extends State<PaymentPage> {
           print(url);
         },
         onResponse: (result) {
-          transactionService.updateStatusById(widget.transactionId, 'Paid');
+          if (result.transactionStatus == 'settlement') {
+            transactionService.updateStatusById(widget.transactionId, 'Paid');
+          } 
           Navigator.push(
             context,
             MaterialPageRoute(

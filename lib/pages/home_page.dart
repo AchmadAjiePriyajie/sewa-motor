@@ -139,8 +139,10 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                         child: Container(
+                          width: 100,
+                          height: 100,
                           padding: EdgeInsets.only(
-                              right: 14, left: 14, top: 15, bottom: 15),
+                              right: 10, left: 10, top: 10, bottom: 10),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -150,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Image.asset(
                                 'images/yamaha.png',
-                                width: 39,
+                                width: 50,
                               ),
                               Text(
                                 'Yamaha',
@@ -177,8 +179,10 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                         child: Container(
+                          width: 100,
+                          height: 100,
                           padding: EdgeInsets.only(
-                              top: 15, bottom: 15, right: 20, left: 20),
+                              right: 10, left: 10, top: 10, bottom: 10),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -188,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Image.asset(
                                 'images/honda.png',
-                                width: 39,
+                                width: 50,
                               ),
                               Text(
                                 'Honda',
@@ -215,8 +219,10 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                         child: Container(
+                          width: 100,
+                          height: 100,
                           padding: EdgeInsets.only(
-                              top: 15, bottom: 15, left: 20, right: 20),
+                              right: 10, left: 10, top: 10, bottom: 10),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -226,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Image.asset(
                                 'images/vespa.png',
-                                width: 39,
+                                width: 50,
                               ),
                               Text(
                                 'Vespa',

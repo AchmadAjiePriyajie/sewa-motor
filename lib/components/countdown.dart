@@ -22,6 +22,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
   Timer? _timer;
   late Duration _duration;
   TransactionService transactionService = TransactionService();
+  
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
       if (remainingTime.isNegative) {
         _timer?.cancel();
         transactionService.countdownUpdate(widget.docId, Timestamp.now());
+
       } else {
         setState(() {
           _duration = remainingTime;

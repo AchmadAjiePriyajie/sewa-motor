@@ -12,6 +12,8 @@ class Transactions {
   final double totalPrice;
   final String snapToken;
   final String status;
+  final bool tambahDurasi;
+  final String extendTransactionId;
   Transactions({
     required this.userId,
     required this.motorId,
@@ -24,6 +26,9 @@ class Transactions {
     required this.totalPrice,
     required this.status,
     required this.address,
+    required this.tambahDurasi,
+    required this.extendTransactionId
+
   });
   factory Transactions.fromJson(Map<String, dynamic> json) => Transactions(
         userId: json['userId'] as String,
@@ -37,6 +42,8 @@ class Transactions {
         paymentMethod: json['payment_method'] as String,
         totalPrice: json['total_price'] as double,
         status: json['status'] as String,
+        tambahDurasi: json['tambahDurasi'] as bool,
+        extendTransactionId: json['extendTransactionId'] as String
       );
 
   Map<String, dynamic> toJson() => {
@@ -51,5 +58,7 @@ class Transactions {
         'endDuration': endDuration,
         'total_price': totalPrice,
         'status': status,
+        'tambahDurasi': tambahDurasi,
+        'extendTransactionId': extendTransactionId
       };
 }

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
@@ -10,6 +9,8 @@ import 'package:sewa_motor/Services/user_services.dart';
 import 'package:sewa_motor/components/countdown.dart';
 import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/components/my_text.dart';
+import 'package:sewa_motor/pages/extend_payment.dart';
+import 'package:sewa_motor/pages/form_extend_transaction.dart';
 import 'package:sewa_motor/pages/payment_page.dart';
 
 class ReceiptPage extends StatefulWidget {
@@ -199,7 +200,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       var metodePembayaran = transactionDoc['payment_method'];
                       var statusPembayaran = transactionDoc['status'];
                       var token = transactionDoc['snap_token'];
+                      var tambahDurasi = transactionDoc['tambahDurasi'];
                       var motorRef = transactionDoc['motorId'];
+                      var extendTransactionId =
+                          transactionDoc['extendTransactionId'];
+
+                      DateTime endDuration =
+                          transactionDoc['endDuration'].toDate();
                       if (motorRef == null || motorRef.path.isEmpty) {
                         return const Center(
                             child: Text('Motor reference is invalid'));
@@ -225,6 +232,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           }
 
                           var motorDoc = motorSnapshot.data!;
+                          var motorId = motorRef.id;
                           var namaMotor = motorDoc['namaMotor'];
                           var harga = motorDoc['harga'];
 
@@ -232,6 +240,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             children: [
                               receipt(
                                 transactionId,
+                                motorId,
                                 namaMotor,
                                 durasiSewa,
                                 harga,
@@ -239,6 +248,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                 metodePembayaran,
                                 statusPembayaran,
                                 token,
+                                endDuration,
+                                motorId,
+                                tambahDurasi,
+                                extendTransactionId,
                               ),
                             ],
                           );
@@ -256,15 +269,19 @@ class _ReceiptPageState extends State<ReceiptPage> {
   }
 
   Widget receipt(
-    String kodePemesanan,
-    String namaMotor,
-    int durasiSewa,
-    int hargaSewa,
-    double total,
-    String metodePembayaran,
-    String statusPembayaran,
-    String token,
-  ) {
+      String kodePemesanan,
+      String motorId,
+      String namaMotor,
+      int durasiSewa,
+      int hargaSewa,
+      double total,
+      String metodePembayaran,
+      String statusPembayaran,
+      String token,
+      DateTime endDuration,
+      String motorRefId,
+      bool tambahDurasi,
+      String extendTransactionId) {
     return Column(
       children: [
         Container(
@@ -308,23 +325,45 @@ class _ReceiptPageState extends State<ReceiptPage> {
               buildDetailRow('Metode Pembayaran', metodePembayaran),
               buildDetailRow('Status Pembayaran', statusPembayaran),
               SizedBox(height: 15),
-              if (metodePembayaran == 'Transfer' &&
-                  statusPembayaran == 'Pending')
-                MyButton(
-                  text: 'Bayar Sekarang',
-                  fontSize: 15,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentPage(
-                          token: token,
-                          transactionId: kodePemesanan,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              metodePembayaran == 'Transfer' && statusPembayaran == 'Pending'
+                  ? MyButton(
+                      text: 'Bayar Sekarang',
+                      fontSize: 15,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentPage(
+                              token: token,
+                              transactionId: kodePemesanan,
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : statusPembayaran == 'Ongoing' &&
+                          endDuration.isAfter(DateTime.now()) &&
+                          tambahDurasi == false
+                      ? MyButton(
+                          text: 'Tambah Durasi',
+                          fontSize: 15,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ExtendTransactionPage(
+                                    transactionId: kodePemesanan,
+                                    motorId: motorRefId)),
+                          ),
+                        )
+                      : extendTransactionId.isNotEmpty
+                          ? MyButton(
+                              text: 'Bayar Tambah Durasi',
+                              fontSize: 15,
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ExtendPaymentPage(extendTransactionId: extendTransactionId),));
+                              },
+                            )
+                          : SizedBox()
             ],
           ),
         ),

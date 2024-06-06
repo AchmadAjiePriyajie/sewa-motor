@@ -42,6 +42,8 @@ class TransactionService {
             totalPrice: totalPrice,
             status: 'Pending',
             address: address,
+            tambahDurasi: false,
+            extendTransactionId: ''
           ).toJson(),
         );
     // return transactionID as Future<String>;
@@ -55,16 +57,46 @@ class TransactionService {
     });
   }
 
+  Future<void> updateExtendId(String docId, String extendId) async{
+    DocumentReference documentReference = transaction.doc(docId);
+    await documentReference.update({
+      'extendTransactionId' : extendId,
+    });
+  }
+
   Future<DocumentSnapshot> getTransactionById(String docID) async {
     DocumentReference docRef = transaction.doc(docID);
     DocumentSnapshot docSnapshot = await docRef.get();
     return docSnapshot;
   }
 
+  
+
   Stream<QuerySnapshot> getTransactionStreamById(String docId) {
     final transactionStream =
         transaction.where('transactionId', isEqualTo: docId).snapshots();
     return transactionStream;
+  }
+
+  Future<void> updateDurationById(String docId, int durationTotal,int duration, double totalPrice,Timestamp endDurations) async{
+    DocumentReference documentReference = transaction.doc(docId);
+    Timestamp orderedAt = endDurations;
+    DateTime orderedAtDateTime = orderedAt.toDate();
+    DateTime endDurationDateTime = orderedAtDateTime.add(Duration(hours: duration));
+    Timestamp endDuration = Timestamp.fromDate(endDurationDateTime);
+    await documentReference.update({
+      'duration' : durationTotal,
+      'endDuration': endDuration,
+      'total_price': totalPrice,
+      'extendTransactionId': ''
+    });
+  }
+
+  Future<void> updateTambahDurasiById(String docID, bool tambahDurasi) async {
+    DocumentReference documentReference = transaction.doc(docID);
+    await documentReference.update({
+      'tambahDurasi': tambahDurasi,
+    });
   }
 
   Future<void> updateStatusById(String docID, String status) async {
