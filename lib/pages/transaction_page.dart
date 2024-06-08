@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sewa_motor/Services/alamat_services.dart';
 import 'package:sewa_motor/Services/midtrans_services.dart';
 import 'package:sewa_motor/Services/motor_services.dart';
 import 'package:sewa_motor/Services/notification_services.dart';
@@ -9,6 +10,7 @@ import 'package:sewa_motor/Services/transaction_service.dart';
 import 'package:sewa_motor/Services/user_services.dart';
 import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/components/my_textfield.dart';
+import 'package:sewa_motor/pages/form_alamat_page.dart';
 import 'package:sewa_motor/pages/main_page.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -22,32 +24,21 @@ class TransactionPage extends StatefulWidget {
   State<TransactionPage> createState() => _TransactionPageState();
 }
 
-List<String> metodePembayaran = ['Transfer', 'Cash'];
-
-List<String> metodePengambilan = ['di ambil', 'di antar'];
-
-bool _isLoading = false;
-
 class _TransactionPageState extends State<TransactionPage> {
   bool isPressed = false;
   TextEditingController durasiController = TextEditingController();
-
   TextEditingController addressController = TextEditingController();
 
   TransactionService transactionService = TransactionService();
-
   NotificationServices notificationServices = NotificationServices();
 
   String selectedMethod = metodePembayaran.first;
-
   String selectedPengambilan = metodePengambilan.first;
+  String? selectedAddress;
 
   MotorService motorService = MotorService();
-
   Future<DocumentSnapshot?>? _motorData;
-
   final user = FirebaseAuth.instance.currentUser!;
-
   UserService userService = UserService();
 
   @override
@@ -58,7 +49,7 @@ class _TransactionPageState extends State<TransactionPage> {
 
   void createTransaction() async {
     DocumentSnapshot? mData = await _motorData;
-    String address = addressController.text;
+    String address = selectedAddress ?? '';
     int duration = int.parse(durasiController.text);
     int harga = mData?['harga'];
     double totalPrice = harga * duration.toDouble();
@@ -73,7 +64,7 @@ class _TransactionPageState extends State<TransactionPage> {
     );
     notificationServices.addNotif(
         'Horee! Pesanan Kamu Berhasil nih',
-        'Pesanan ${transactionID} Telah dibuat, Silahkan lanjutkan transaksi',
+        'Pesanan $transactionID Telah dibuat, Silahkan lanjutkan transaksi',
         user.email!,
         transactionID);
 
@@ -110,6 +101,7 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,23 +224,82 @@ class _TransactionPageState extends State<TransactionPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                MyTextField(
-                                  maxLine: 3,
-                                  obscureText: false,
-                                  keyboardType: TextInputType.multiline,
-                                  hintText: 'Alamat Lengkap',
-                                  controller: addressController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Alamat Kosong';
-                                    } else {
-                                      return null;
+                                StreamBuilder<QuerySnapshot>(
+                                  stream: AlamatServices().getAlamatStream(user.email!),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(child: CircularProgressIndicator());
                                     }
+
+                                    if (snapshot.hasError) {
+                                      return const Center(child: Text('Error loading addresses'));
+                                    }
+
+                                    List<DropdownMenuItem<String>> addressItems = snapshot.hasData && snapshot.data!.docs.isNotEmpty
+                                      ? snapshot.data!.docs.map((DocumentSnapshot document) {
+                                          Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                                          String address = data['detailAlamat'];
+                                          return DropdownMenuItem<String>(
+                                            value: address,
+                                            child: Text(
+                                              address,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          );
+                                        }).toList()
+                                      : [];
+
+                                    addressItems.insert(0, DropdownMenuItem<String>(
+                                      value: 'Tambah Alamat',
+                                      child: Text('Tambah Alamat'),
+                                    ));
+
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: const BorderSide(color: Colors.black),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: const BorderSide(color: Colors.black),
+                                        ),
+                                      ),
+                                      items: addressItems,
+                                      value: selectedAddress,
+                                      onChanged: (String? newValue) async {
+                                        if (newValue == 'Tambah Alamat') {
+                                          final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => FormAlamatPage(motorId: widget.motorId, docId: 'form',),
+                                            ),
+                                          );
+                                          if (result != null) {
+                                            setState(() {
+                                              selectedAddress = result as String;
+                                              // Add the new address to the dropdown items
+                                              addressItems.add(DropdownMenuItem(
+                                                value: result,
+                                                child: Text(
+                                                  result,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ));
+                                            });
+                                          }
+                                        } else {
+                                          setState(() {
+                                            selectedAddress = newValue;
+                                          });
+                                        }
+                                      },
+                                    );
                                   },
                                 ),
                               ],
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       const SizedBox(
                         height: 15,
                       ),
@@ -311,15 +362,15 @@ class _TransactionPageState extends State<TransactionPage> {
                         height: 20,
                       ),
                       MyButton(
-                        disabled: isPressed == true,
+                        disabled: isPressed,
                         text: 'Lanjutkan',
                         fontSize: 20,
                         onTap: () {
-                          isPressed = true;
+                          setState(() {
+                            isPressed = true;
+                          });
                           if (_formKey.currentState!.validate()) {
                             createTransaction();
-                            // namaLengkapController.clear();
-                            // durasiController.clear();
                           }
                         },
                       ),
@@ -337,3 +388,6 @@ class _TransactionPageState extends State<TransactionPage> {
     );
   }
 }
+
+List<String> metodePembayaran = ['Transfer', 'Cash'];
+List<String> metodePengambilan = ['di ambil', 'di antar'];
