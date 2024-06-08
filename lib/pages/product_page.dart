@@ -173,7 +173,6 @@ class _ProductPageState extends State<ProductPage> {
                       FutureBuilder<DocumentSnapshot?>(
                         future: userService.getUserById(user.email!),
                         builder: (context, snapshot) {
-                          print(snapshot.data?['transactionId'] != '');
                           return snapshot.data?['transactionId'] == ''
                               ? MyButton(
                                   text: "Pesan Sekarang",

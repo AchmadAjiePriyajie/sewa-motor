@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/Services/user_services.dart';
+import 'package:sewa_motor/pages/alamat_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -109,6 +110,28 @@ class _ProfilePageState extends State<ProfilePage> {
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                           )),
+                      Icon(Icons.navigate_next)
+                    ],
+                  ),
+                ),
+                Divider(),
+                ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AlamatPage(),
+                      ),
+                    );
+                  },
+                  leading: Icon(Icons.home),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Alamat',
+                        style: GoogleFonts.poppins(fontSize: 12),
+                      ),
                       Icon(Icons.navigate_next)
                     ],
                   ),
