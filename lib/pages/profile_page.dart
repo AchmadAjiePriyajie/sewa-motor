@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/Services/user_services.dart';
 import 'package:sewa_motor/pages/alamat_page.dart';
+import 'package:sewa_motor/pages/profile_pages/preview_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -101,15 +102,22 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               children: [
                 ListTile(
-                  onTap: () {},
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PreviewProfilePage(),
+                    ),
+                  ),
                   leading: Icon(Icons.person),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Profile Settings',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                          )),
+                      Text(
+                        'Profile Settings',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                        ),
+                      ),
                       Icon(Icons.navigate_next)
                     ],
                   ),

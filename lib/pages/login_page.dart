@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sewa_motor/components/my_button.dart';
 import 'package:sewa_motor/components/popup_message.dart';
+import 'package:sewa_motor/pages/profile_pages/reset_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({
@@ -31,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-          Navigator.popAndPushNamed(context, '/auth_page');
+      Navigator.popAndPushNamed(context, '/auth_page');
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       // Stop Loading
@@ -176,11 +178,19 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          'Lupa kata sandi?',
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ResetPasswordpage(),
+                              )),
+                          child: Text(
+                            'Lupa kata sandi?',
+                            style: GoogleFonts.poppins(
+                              color: Colors.lightBlue,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ],

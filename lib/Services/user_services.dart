@@ -26,6 +26,14 @@ class UserService {
     return userStream;
   }
 
+  Future<void> updateUserById(
+      String docId, String username, String noWA) async {
+    await user.doc(docId).update({
+      'username': username,
+      'nomor_wa': noWA,
+    });
+  }
+
   Future<void> updateUserTransctionId(
       String docID, String transactionId) async {
     await user.doc(docID).update({
