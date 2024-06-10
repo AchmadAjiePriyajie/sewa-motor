@@ -196,7 +196,13 @@ class _TransactionPageState extends State<TransactionPage> {
                             .map(
                               (e) => DropdownMenuItem(
                                 value: e,
-                                child: Text(e),
+                                child: Container(
+                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                                  child: Text(
+                                    e,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ),
                             )
                             .toList(),
@@ -241,9 +247,12 @@ class _TransactionPageState extends State<TransactionPage> {
                                           String address = data['detailAlamat'];
                                           return DropdownMenuItem<String>(
                                             value: address,
-                                            child: Text(
-                                              address,
-                                              overflow: TextOverflow.ellipsis,
+                                            child: Container(
+                                              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                                              child: Text(
+                                                address,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
                                           );
                                         }).toList()
@@ -281,16 +290,19 @@ class _TransactionPageState extends State<TransactionPage> {
                                               // Add the new address to the dropdown items
                                               addressItems.add(DropdownMenuItem(
                                                 value: result,
-                                                child: Text(
-                                                  result,
-                                                  overflow: TextOverflow.ellipsis,
+                                                child: Container(
+                                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                                                  child: Text(
+                                                    result,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
                                                 ),
                                               ));
                                             });
                                           }
                                         } else {
                                           setState(() {
-                                            selectedAddress = newValue;
+                                            selectedAddress = newValue!;
                                           });
                                         }
                                       },
@@ -299,12 +311,12 @@ class _TransactionPageState extends State<TransactionPage> {
                                 ),
                               ],
                             )
-                          : const SizedBox(),
+                          : Container(),
                       const SizedBox(
                         height: 15,
                       ),
                       Text(
-                        'Durasi(Jam)',
+                        'Durasi (Jam)',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -314,10 +326,10 @@ class _TransactionPageState extends State<TransactionPage> {
                         height: 10,
                       ),
                       MyTextField(
+                        controller: durasiController,
+                        hintText: 'Durasi',
                         keyboardType: TextInputType.number,
                         obscureText: false,
-                        hintText: 'Durasi(Jam)',
-                        controller: durasiController,
                       ),
                       const SizedBox(
                         height: 15,
@@ -344,14 +356,18 @@ class _TransactionPageState extends State<TransactionPage> {
                           ),
                         ),
                         value: selectedMethod,
-                        items: metodePembayaran
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
+                        items: metodePembayaran.map(
+                          (e) => DropdownMenuItem(
+                            value: e,
+                            child: Container(
+                              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                              child: Text(
+                                e,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            )
-                            .toList(),
+                            ),
+                          ),
+                        ).toList(),
                         onChanged: (String? newValue) {
                           setState(() {
                             selectedMethod = newValue!;

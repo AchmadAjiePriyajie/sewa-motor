@@ -31,6 +31,11 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final double imageHeight = size.height * 0.15;
+    final double imageWidth = size.width * 0.25;
+    final double containerPadding = size.width * 0.02;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -44,7 +49,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
         backgroundColor: Colors.lightBlue[800],
       ),
       body: SizedBox(
-        height: 600,
+        height: size.height * 0.8,
         child: FutureBuilder(
           future: _transactionData,
           builder: (context, snapshot) {
@@ -86,9 +91,8 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                 return Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(10),
-                      margin: EdgeInsets.only(
-                          left: 10, right: 10, bottom: 10, top: 10),
+                      padding: EdgeInsets.all(containerPadding),
+                      margin: EdgeInsets.symmetric(horizontal: containerPadding, vertical: containerPadding),
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(12)),
@@ -96,13 +100,12 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                         children: [
                           Image.network(
                             snapshot.data?['Image'],
-                            height: 90,
+                            height: 100,
                             width: 100,
                           ),
                           Container(
-                            height: 90,
-                            width: 250,
-                            padding: EdgeInsets.only(left: 10),
+                            width: size.width * 0.6,
+                            padding: EdgeInsets.only(left: containerPadding),
                             child: Column(
                               children: [
                                 Row(
@@ -144,9 +147,10 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                                   ],
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
+                                      margin: EdgeInsets.only(top: 10),
                                       decoration: BoxDecoration(
                                           color: statusPembayaran == 'Completed'
                                               ? Colors.green
@@ -173,8 +177,8 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.all(containerPadding),
+                      padding: EdgeInsets.all(containerPadding),
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(12)),
@@ -195,7 +199,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             ],
                           ),
                           Divider(),
-                          SizedBox(height: 10),
+                          SizedBox(height: containerPadding),
                           MyText(
                             text: 'Kode Pemesanan',
                             fontSize: 12,
@@ -206,7 +210,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: containerPadding),
                           MyText(
                             text: 'Nama Motor',
                             fontSize: 12,
@@ -217,7 +221,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: containerPadding),
                           MyText(
                             text: 'Durasi Sewa',
                             fontSize: 12,
@@ -228,7 +232,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: containerPadding),
                           MyText(
                             text: 'Harga Sewa',
                             fontSize: 12,
@@ -243,7 +247,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: containerPadding),
                           MyText(
                             text: 'Total',
                             fontSize: 12,
@@ -258,7 +262,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: containerPadding),
                           MyText(
                             text: 'Metode Pembayaran',
                             fontSize: 12,
@@ -269,7 +273,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: containerPadding),
                           MyText(
                             text: 'Status Pembayaran',
                             fontSize: 12,
@@ -280,7 +284,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 15),
+                          SizedBox(height: containerPadding * 1.5),
                           statusPembayaran == 'Pending' &&
                                   metodePembayaran == 'Transfer'
                               ? MyButton(
